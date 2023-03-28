@@ -1,105 +1,242 @@
-<!DOCTYPE HTML>
-<!--
-	Hyperspace by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
+<!DOCTYPE html>
 <html>
 	<head>
-		<title>翻轉吧！密碼學教室@YZU</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	<link rel=stylesheet type="text/css" href="index.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>NTUT CISLab</title>
+	<!--<link rel="shortcut icon" href="pt/favicon.ico" type="image/x-icon">-->
+	<!--AOS連結-->
+	<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+	<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+	
 	</head>
-	<body class="is-preload">
-
-		<!-- Sidebar -->
-			<section id="sidebar">
-				<div class="inner">
-					<nav>
-						<ul>
-							<li><a href="#intro">Welcome</a></li>
-							<li><a href="#one">LECTURE</a></li>
-                            <li><a href="#two">Resource</a></li>
-						</ul>
-					</nav>
+	<body>
+		<div id="preloader">
+			<div id="status">
+				<div class="ring">Loading
+					<span></span>
 				</div>
-			</section>
-
-		<!-- Wrapper -->
-			<div id="wrapper">
-
-				<!-- Intro -->
-					<section id="intro" class="wrapper style1 fullscreen fade-up">
-						<div class="inner">
-							<h1>YZU Crypto 2018 (Test)</h1>
-							<p>授課老師：陳昱圻</p>
+			</div>
+		</div>
+		<nav>
+			<div class="container">
+			<!--設定範圍-->
+				<div class="logo">
+					<a href="">
+						<div class="logo_img">
+							<div class="logo_img">CISLAB</div>
 						</div>
-					</section>
-
-				<!-- One -->
-					<section id="one" class="wrapper style2 spotlights" >
-						<section>	
-							<div class="content">
-								<div class="inner">
-									<h2>LECTURE</h2>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLU2EvCHBGD4D3RfuLXMCNNY"><b>Lesson 1</b></a> &nbsp; <br>Introduction </p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLVpb9Lbbo5toMnfsWR2OT9Y"><b>Lesson 2</b></a> &nbsp; <br>Perfect Secrecy</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLVhmE15eIDISXhrMKY4-7Qj"><b>Lesson 3</b></a> &nbsp; <br>Perfect Secrecy</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLW5j450XFAffhWsTSKmnHNX"><b>Lesson 4</b></a> &nbsp; <br>Perfect Secrecy & Private Key Encryption</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLVohRFHscd1QJVnFya1dVI2"><b>Lesson 5-1</b></a> &nbsp; <br>Private Key Encryption</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLWKetk3084cLk3SHYou_p_v"><b>Lesson 5-2</b></a> &nbsp; <br>Private Key Encryption</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLXenR3KawXF_8QrBDzWOYTm"><b>Lesson 6</b></a> &nbsp; <br>Private Key Encryption</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLWcl3g5vyWFoK_8P7_iW-Q7"><b>Lesson 7</b></a> &nbsp; <br>Padding Oracle Attack & Message Authentication Code</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLW8Lm1vSZ_8wB-TPqwoKs6Y"><b>Lesson 8</b></a> &nbsp; <br>Message Authentication Code</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLX0G33X2BT2o6YQ0mB5oHMb"><b>Lesson 9</b></a> &nbsp; <br>Hash Functions</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLXaZDsU1wz-uQaDerbp70zJ"><b>Lesson 10</b></a> &nbsp; <br>Hash Functions</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLXHYvUZh1J6ISv7nwaPk94E"><b>Lesson 11</b></a> &nbsp; <br>Hash Functions & Key Management and Distribution</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLW403viY5a4IFOj5dadWjEB"><b>Lesson 12</b></a> &nbsp; <br>Key Management and Distribution & Public Key Encryption</p>
-                                    <p><a href = "https://www.youtube.com/playlist?list=PLY5cA9i1xtLXZRkfV3hNErr9zhwDcuun8"><b>Lesson 13</b></a> &nbsp; <br>Digital Signature</p>
-                                    
-                                    
+					</a>
+				</div>
+				
+				<ul class="menu">
+					<li id="item1"><a href="#About">About</a></li>
+					<li  id="item2"><a href="#Members">Members</a></li>
+					<li id="item3"><a href="#Project">Project</a></li>
+					<!--<li id="item4"><a href="#Publications">Publications</a></li>-->
+					<li id="item5"><a href="#Contact">Contact</a></li>
+				</ul>
+			</div>
+		</nav>
+		<header data-aos="fade-up">
+			<div class="container">
+				<div class="text-area" data-aos="fade-up">
+					<div class="text" data-aos="flip-up">
+						Taipei Tech CISLab
+					</div>
+				</div>
+			</div>
+		</header>
+		<main>
+			<article id="About" data-aos="fade-right">
+				<h1 data-aos="fade-right">about</h1>
+				<section>
+					<div class="description">
+						<p>充滿愛與歡樂的實驗室~</p>
+						<p>這裡很好玩，有零食櫃以及冰箱，滿足空虛ㄉ心與胃。</p>
+						<p>實驗室同學也有帥哥，實驗室13樓風景也很水，歡迎一起來體驗^^</p>
+						<p></p>
+						<br>
+						<p>研究方向：主要是密碼學、資訊安全、區塊鏈相關，但只要有興趣都可以提出!</p>
+					</div>
+				<p></p>
+				</section>
+			</article>
+			
+			<article id="Members" data-aos="fade-right">
+				<h1 data-aos="fade-right">members</h1>
+				<section>
+					<div class="wrap">
+						<h2>老大：</h2>
+						<div class="image">
+							<div class="boss">
+								<div>	
+									<div class="boss_img">
+										<img src="pt/boss.jpg">
+									</div>
+								</div>
+								<div>
+									<b>Yu-Chi Chen 陳昱圻</b>
+									<p class="pbold">：我的課很操，身心俱疲的那種，但我都不太當(ㄉㄤˋ)人</p>
+									<br>
+									<p>國立臺北科技大學 資訊工程系</p>
+									<p>研究領域: 密碼學、資訊安全、區塊鏈</p>
+									<p>wycchen@ntut.edu.tw</p>
+									<p>宏裕科技大樓1529</p>
+									
+									<a href="https://wycchen.github.io/" target="_blank">點擊了解更多Yu-Chi Chen ^3^</a>
 								</div>
 							</div>
-						</section>
-                </section>
- 
-			
-            <!-- Two -->
-            <section id="two" class="wrapper style2 spotlights" >
-                <section>
-                    <div class="content">
-                        <div class="inner">
-                            <h2>Resource</h2>
-                            
-                            <a href = " http://140.138.77.30:16121/"><b>CTF server</b></a>
-                            <br>
-                            LINE@ (ID: cpq1524q)
-                            
-                        </div>
-                    </div>
-                </section>
-            </section>
-            </div>
-            
-		<!-- Footer -->
-			<footer id="footer" class="wrapper style1-alt">
-				<div class="inner">
-					<ul class="menu">
-						<li>&copy; CIS-lab@YZU. All rights reserved.</li>
+						</div>
+					</div>
+					<hr class="hr1">
+					<br>
+					<div class="wrap">
+						<h2>小夥伴：</h2>
+						<h2>2022：</h2>
+						<div class="image">
+							<div class="row">
+								<div class="std_img">
+								<img src="image/1.jpg">
+								<p class="img_div">賴宗賢</p>
+								</div>
+								<div class="std_img">
+									<img src="image/2.jpg">
+									<p class="img_div">張廷宇</p>
+								</div>
+								<div class="std_img">
+									<img src="image/3.jpg">
+									<p class="img_div">顏新展</p>
+								</div>
+								<div class="std_img">
+									<img src="image/4.jpg">
+									<p class="img_div">林姵妏</p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="std_img">
+									<img src="image/5.jpg">
+									<p class="img_div">張桓齊</p>
+								</div>
+								<div class="std_img">
+									<img src="image/6.jpg">
+									<p class="img_div">張國洋</p>
+								</div>
+								<div class="std_img">
+									<img src="image/7.jpg">
+									<p class="img_div">洪章景</p>
+								</div>
+								<div class="std_img">
+									<img src="image/8.jpg">
+									<p class="img_div">謝宗辰</p>
+								</div>
+							</div>
+							
+						</div>
+						<h2>2023：</h2>
+						<div class="image">
+							<!--<div style="visibility:hidden">
+								<img>
+								<p></p>
+							</div>
+							<div style="visibility:hidden">
+								<img>
+								<p></p>
+							</div>-->
+							
+						</div>
+						
+					</div>
+				</section>
+			</article>
+			<article id="Project" data-aos="fade-right">
+				<h1 data-aos="fade-right">Project</h1>
+				<section>
+				<div class="project_list">
+					<ul >
+						<li>
+							<div class="project_title">Title</div>
+							<div class="project_des">description</div>
+						</li>
+						<hr class="hr2">
+						<li>
+							<div class="project_title">Title</div>
+							<div class="project_des">description</div>
+						</li>
+						<hr class="hr2">
+						<li>
+							<div class="project_title">Title</div>
+							<div class="project_des">description</div>
+						</li>
+						<hr class="hr2">
+						<li>
+							<div class="project_title">Title</div>
+							<div class="project_des">description</div>
+						</li>
+						<hr class="hr2">
+						<li>
+							<div class="project_title">Title</div>
+							<div class="project_des">description</div>
+						</li>
+						<hr class="hr2">
+						<li>
+							<div class="project_title">Title</div>
+							<div class="project_des">description</div>
+						</li>
+						<!--<hr class="hr2">-->
 					</ul>
 				</div>
-			</footer>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/main.js"></script>
-
-			<script src="assets/js/util.js"></script>
+				</section>
+			</article>
+			<!--	<article id="Publications">
+				<h1 data-aos="fade-right">publications</h1>
+					<section>
+					
+					</section>
+				</article>-->
+				
+			
+			<article id="Contact" data-aos="fade-right">
+				<h1 data-aos="fade-right">contact us</h1>
+				<section>
+					<div class="contactus">
+						<div class="childdiv">
+							<h3>OFFICE ADDRESS</h3>
+							<p>國立臺北科技大學宏裕科技大樓1322</p>
+							<p>(106台北市大安區新生南路一段3號)</p>
+							<br>
+							<div class="map">
+								<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14458.822273320613!2d121.5338784!3d25.0440642!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442a97cd4962b0b%3A0x75144e30dbb37ee6!2z5ZyL56uL6Ie65YyX56eR5oqA5aSn5a245a6P6KOV56eR5oqA56CU56m25aSn5qiT!5e0!3m2!1szh-TW!2stw!4v1677507946281!5m2!1szh-TW!2stw"
+								style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+							</div>
+						</div>
+						<div class="childdiv">
+							<h3>PHONE NUMBER</h3>
+							<p>coming soon...</p>
+						</div>
+						<div class="childdiv">
+							<h3>EMAIL</h3>
+							<p>coming soon...</p>
+						</div>
+					</div>
+				</section>
+			</article>
+			
+		</main>
+		<footer>
+			<div class="container">
+			
+			</div>
+		</footer>
+	<script>
+		AOS.init({
+			duration:1000,
+		});
+	</script>
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/jquery.stellar.min.js"></script>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script src="index.js"></script>
 	</body>
+
 </html>
