@@ -97,37 +97,37 @@
 						<div class="image">
 							<div class="row">
 								<div class="std_img">
-								<img src="pt/1.jpg">
+								<img src="image/1.jpg">
 								<p class="img_div">賴宗賢</p>
 								</div>
 								<div class="std_img">
-									<img src="pt/2.jpg">
+									<img src="image/2.jpg">
 									<p class="img_div">張廷宇</p>
 								</div>
 								<div class="std_img">
-									<img src="pt/3.jpg">
+									<img src="image/3.jpg">
 									<p class="img_div">顏新展</p>
 								</div>
 								<div class="std_img">
-									<img src="pt/4.jpg">
+									<img src="image/4.jpg">
 									<p class="img_div">林姵妏</p>
 								</div>
 							</div>
 							<div class="row">
 								<div class="std_img">
-									<img src="pt/5.jpg">
+									<img src="image/5.jpg">
 									<p class="img_div">張桓齊</p>
 								</div>
 								<div class="std_img">
-									<img src="pt/6.jpg">
+									<img src="image/6.jpg">
 									<p class="img_div">張國洋</p>
 								</div>
 								<div class="std_img">
-									<img src="pt/7.jpg">
+									<img src="image/7.jpg">
 									<p class="img_div">洪章景</p>
 								</div>
 								<div class="std_img">
-									<img src="pt/8.jpg">
+									<img src="image/8.jpg">
 									<p class="img_div">謝宗辰</p>
 								</div>
 							</div>
