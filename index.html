@@ -1,385 +1,406 @@
 <!DOCTYPE html>
-<html>
-	<head>
-	<link rel=stylesheet type="text/css" href="index.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<title>NTUT CISLab</title>
-	<!--<link rel="shortcut icon" href="pt/favicon.ico" type="image/x-icon">-->
-	<!--AOS連結-->
-	<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-	<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-	
-	</head>
-	<body>
-		<div id="preloader">
-			<div id="status">
-				<div class="ring">Loading
-					<span></span>
+<html lang="zh-Hant-TW">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="CIS Lab @ Taipei Tech — 國立臺北科技大學 密碼學與資訊安全實驗室">
+	<meta name="theme-color" content="#f68084">
+	<title data-i18n="meta.title">NTUT CISLab</title>
+	<link rel="icon" href="image/logo/favicon.svg" type="image/svg+xml">
+	<link rel="icon" href="image/logo/favicon-32.png" sizes="32x32" type="image/png">
+	<link rel="apple-touch-icon" href="image/logo/apple-touch-icon.png">
+	<meta property="og:title" content="CIS Lab @ Taipei Tech">
+	<meta property="og:description" content="國立臺北科技大學 密碼學與資訊安全實驗室 Cryptography and Information Security Lab">
+	<meta property="og:image" content="https://cislab-ntut.github.io/image/logo/logo-full.png">
+	<meta property="og:type" content="website">
+
+	<!-- 先套用主題與語系，避免畫面閃爍 -->
+	<script>
+		(function () {
+			var root = document.documentElement, theme = null, lang = null;
+			try { theme = localStorage.getItem('theme'); lang = localStorage.getItem('lang'); } catch (e) {}
+			var q = new URLSearchParams(location.search).get('lang');
+			if (q === 'jp') q = 'ja';
+			if (q === 'en' || q === 'zh' || q === 'ja') lang = q;
+			if (lang !== 'en' && lang !== 'ja') lang = lang === 'zh' ? 'zh' : null;
+			if (!theme) theme = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			if (!lang) {
+				var nl = (navigator.language || '').toLowerCase();
+				lang = nl.indexOf('zh') === 0 ? 'zh' : nl.indexOf('ja') === 0 ? 'ja' : 'en';
+			}
+			root.setAttribute('data-theme', theme);
+			root.setAttribute('data-lang', lang);
+			root.lang = { zh: 'zh-Hant-TW', en: 'en', ja: 'ja' }[lang];
+			try { if (sessionStorage.getItem('introSeen')) root.classList.add('intro-seen'); } catch (e) {}
+		})();
+	</script>
+
+	<!-- Font Awesome (https://fontawesome.com/) -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+	<link rel="stylesheet" href="index.css?v=20261007">
+</head>
+<body>
+	<!-- Logo 圖形（全站共用） -->
+	<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="cis-mark" viewBox="70 38 302 288"><g fill="none"><line x1="271" y1="50.5" x2="129.5" y2="70"/><line x1="129.5" y1="70" x2="351" y2="115.5"/><line x1="129.5" y1="70" x2="171" y2="103.5"/><line x1="171" y1="103.5" x2="202.5" y2="134.5"/><line x1="129.5" y1="70" x2="172" y2="213"/><line x1="129.5" y1="70" x2="83.5" y2="184"/><line x1="271" y1="50.5" x2="253.5" y2="125"/><line x1="271" y1="50.5" x2="351" y2="115.5"/><line x1="271" y1="50.5" x2="171" y2="103.5"/><line x1="171" y1="103.5" x2="83.5" y2="184"/><line x1="253.5" y1="125" x2="202.5" y2="134.5"/><line x1="351" y1="115.5" x2="253.5" y2="125"/><line x1="253.5" y1="125" x2="172" y2="213"/><line x1="202.5" y1="134.5" x2="172" y2="213"/><line x1="83.5" y1="184" x2="172" y2="213"/><line x1="83.5" y1="184" x2="146" y2="281"/><line x1="172" y1="213" x2="331" y2="272"/><line x1="172" y1="213" x2="248" y2="313"/><line x1="146" y1="281" x2="248" y2="313"/><line x1="248" y1="313" x2="331" y2="272"/><g stroke-dasharray="4 3"><line x1="129.5" y1="70" x2="140" y2="272"/><line x1="152" y1="274" x2="331" y2="272"/></g></g><g stroke="none"><rect x="265" y="45" width="12" height="11" rx="1"/><rect x="123" y="64" width="13" height="12" rx="1"/><rect x="166" y="98" width="10" height="11" rx="1"/><rect x="343" y="107" width="16" height="17" rx="1"/><rect x="243" y="113" width="21" height="24" rx="1"/><rect x="196" y="129" width="13" height="11" rx="1"/><rect x="76" y="175" width="15" height="18" rx="1"/><rect x="166" y="207" width="12" height="12" rx="1"/><rect x="138" y="271" width="16" height="20" rx="1"/><rect x="242" y="307" width="12" height="12" rx="1"/><path style="fill:var(--lock,currentColor)" fill-rule="evenodd" d="M330 261h34v32h-34z M344.3 287V276.2A5.5 5.5 0 1 1 347.7 276.2V287z"/></g></symbol><symbol id="cis-mark-bold" viewBox="70 38 302 288"><g fill="none" stroke-linecap="round"><line x1="271" y1="50.5" x2="129.5" y2="70"/><line x1="129.5" y1="70" x2="351" y2="115.5"/><line x1="129.5" y1="70" x2="171" y2="103.5"/><line x1="171" y1="103.5" x2="202.5" y2="134.5"/><line x1="129.5" y1="70" x2="172" y2="213"/><line x1="129.5" y1="70" x2="83.5" y2="184"/><line x1="271" y1="50.5" x2="253.5" y2="125"/><line x1="271" y1="50.5" x2="351" y2="115.5"/><line x1="271" y1="50.5" x2="171" y2="103.5"/><line x1="171" y1="103.5" x2="83.5" y2="184"/><line x1="253.5" y1="125" x2="202.5" y2="134.5"/><line x1="351" y1="115.5" x2="253.5" y2="125"/><line x1="253.5" y1="125" x2="172" y2="213"/><line x1="202.5" y1="134.5" x2="172" y2="213"/><line x1="83.5" y1="184" x2="172" y2="213"/><line x1="83.5" y1="184" x2="146" y2="281"/><line x1="172" y1="213" x2="331" y2="272"/><line x1="172" y1="213" x2="248" y2="313"/><line x1="146" y1="281" x2="248" y2="313"/><line x1="248" y1="313" x2="331" y2="272"/><line x1="129.5" y1="70" x2="140" y2="272"/><line x1="152" y1="274" x2="331" y2="272"/></g><g stroke="none"><rect x="259.6" y="40.05" width="22.8" height="20.9" rx="1"/><rect x="117.15" y="58.6" width="24.7" height="22.8" rx="1"/><rect x="161.5" y="93.05" width="19" height="20.9" rx="1"/><rect x="335.8" y="99.35" width="30.4" height="32.3" rx="1"/><rect x="233.55" y="102.2" width="39.9" height="45.6" rx="1"/><rect x="190.15" y="124.05" width="24.7" height="20.9" rx="1"/><rect x="69.25" y="166.9" width="28.5" height="34.2" rx="1"/><rect x="160.6" y="201.6" width="22.8" height="22.8" rx="1"/><rect x="130.8" y="262" width="30.4" height="38" rx="1"/><rect x="236.6" y="301.6" width="22.8" height="22.8" rx="1"/><g transform="translate(347 277) scale(1.3) translate(-347 -277)"><path style="fill:var(--lock,currentColor)" fill-rule="evenodd" d="M330 261h34v32h-34z M344.3 287V276.2A5.5 5.5 0 1 1 347.7 276.2V287z"/></g></g></symbol></svg>
+
+	<div id="preloader" role="status">
+		<div id="status">
+			<svg class="pre-mark" viewBox="70 38 302 288" aria-hidden="true"><g class="edges"><line class="e" style="--i:0;--l:143" x1="271" y1="50.5" x2="129.5" y2="70"/><line class="e" style="--i:1;--l:226" x1="129.5" y1="70" x2="351" y2="115.5"/><line class="e" style="--i:2;--l:53" x1="129.5" y1="70" x2="171" y2="103.5"/><line class="e" style="--i:3;--l:44" x1="171" y1="103.5" x2="202.5" y2="134.5"/><line class="e" style="--i:4;--l:149" x1="129.5" y1="70" x2="172" y2="213"/><line class="e" style="--i:5;--l:123" x1="129.5" y1="70" x2="83.5" y2="184"/><line class="e" style="--i:6;--l:77" x1="271" y1="50.5" x2="253.5" y2="125"/><line class="e" style="--i:7;--l:103" x1="271" y1="50.5" x2="351" y2="115.5"/><line class="e" style="--i:8;--l:113" x1="271" y1="50.5" x2="171" y2="103.5"/><line class="e" style="--i:9;--l:119" x1="171" y1="103.5" x2="83.5" y2="184"/><line class="e" style="--i:10;--l:52" x1="253.5" y1="125" x2="202.5" y2="134.5"/><line class="e" style="--i:11;--l:98" x1="351" y1="115.5" x2="253.5" y2="125"/><line class="e" style="--i:12;--l:120" x1="253.5" y1="125" x2="172" y2="213"/><line class="e" style="--i:13;--l:84" x1="202.5" y1="134.5" x2="172" y2="213"/><line class="e" style="--i:14;--l:93" x1="83.5" y1="184" x2="172" y2="213"/><line class="e" style="--i:15;--l:115" x1="83.5" y1="184" x2="146" y2="281"/><line class="e" style="--i:16;--l:170" x1="172" y1="213" x2="331" y2="272"/><line class="e" style="--i:17;--l:126" x1="172" y1="213" x2="248" y2="313"/><line class="e" style="--i:18;--l:107" x1="146" y1="281" x2="248" y2="313"/><line class="e" style="--i:19;--l:93" x1="248" y1="313" x2="331" y2="272"/><line class="e d" style="--i:20;--l:202" x1="129.5" y1="70" x2="140" y2="272"/><line class="e d" style="--i:21;--l:179" x1="152" y1="274" x2="331" y2="272"/></g><g class="nodes"><rect class="n" style="--i:0" x="265" y="45" width="12" height="11" rx="1"/><rect class="n" style="--i:1" x="123" y="64" width="13" height="12" rx="1"/><rect class="n" style="--i:2" x="166" y="98" width="10" height="11" rx="1"/><rect class="n" style="--i:3" x="343" y="107" width="16" height="17" rx="1"/><rect class="n" style="--i:4" x="243" y="113" width="21" height="24" rx="1"/><rect class="n" style="--i:5" x="196" y="129" width="13" height="11" rx="1"/><rect class="n" style="--i:6" x="76" y="175" width="15" height="18" rx="1"/><rect class="n" style="--i:7" x="166" y="207" width="12" height="12" rx="1"/><rect class="n" style="--i:9" x="138" y="271" width="16" height="20" rx="1"/><rect class="n" style="--i:10" x="242" y="307" width="12" height="12" rx="1"/></g><path class="lock" fill-rule="evenodd" d="M330 261h34v32h-34z M344.3 287V276.2A5.5 5.5 0 1 1 347.7 276.2V287z"/></svg>
+			<span class="pre-word" aria-hidden="true"></span>
+			<span class="sr-only">Loading…</span>
+		</div>
+	</div>
+
+	<canvas id="sparkle-canvas" aria-hidden="true"></canvas>
+
+	<nav>
+		<div class="container">
+			<div class="logo">
+				<a class="brand" href="#top" aria-label="CIS Lab @ Taipei Tech">
+					<svg class="brand-mark" aria-hidden="true"><use href="#cis-mark-bold"></use></svg>
+					<span class="brand-word" aria-hidden="true"></span>
+				</a>
+			</div>
+
+			<ul class="menu">
+				<li><a href="#News"><i class="fa-solid fa-bullhorn menu-icon"></i><span data-i18n="nav.news">最新消息</span></a></li>
+				<li><a href="#About"><i class="fa-solid fa-circle-info menu-icon"></i><span data-i18n="nav.about">關於</span></a></li>
+				<li><a href="#Life"><i class="fa-solid fa-images menu-icon"></i><span data-i18n="nav.life">生活</span></a></li>
+				<li><a href="#Members"><i class="fa-solid fa-users menu-icon"></i><span data-i18n="nav.members">成員</span></a></li>
+				<li><a href="#Project"><i class="fa-solid fa-diagram-project menu-icon"></i><span data-i18n="nav.project">研究</span></a></li>
+				<li><a href="#Contact"><i class="fa-solid fa-location-dot menu-icon"></i><span data-i18n="nav.contact">聯絡</span></a></li>
+			</ul>
+
+			<div class="nav-tools">
+				<div class="lang-seg" role="group" data-i18n-aria="tool.lang" aria-label="語言">
+					<i class="fa-solid fa-language" aria-hidden="true"></i>
+					<button type="button" data-set-lang="zh" lang="zh-Hant-TW" aria-pressed="true" title="繁體中文">TW</button>
+					<button type="button" data-set-lang="en" lang="en" aria-pressed="false" title="English">EN</button>
+					<button type="button" data-set-lang="ja" lang="ja" aria-pressed="false" title="日本語">JP</button>
+				</div>
+				<button type="button" id="themeToggle" class="tool-btn" data-i18n-aria="tool.theme" aria-label="切換深淺色模式">
+					<i class="fa-solid fa-moon"></i>
+				</button>
+			</div>
+		</div>
+
+		<!-- 跑馬燈：自動讀取 news/ 內的 md -->
+		<div class="ticker" role="region" data-i18n-aria="ticker.label" aria-label="速報資訊">
+			<span class="ticker-label"><i class="fa-solid fa-bullhorn"></i><span data-i18n="ticker.label">速報資訊</span></span>
+			<div class="ticker-viewport">
+				<div class="ticker-track" id="tickerTrack"></div>
+			</div>
+		</div>
+	</nav>
+
+	<header id="top">
+		<div class="container">
+			<div class="text-area">
+				<svg class="hero-mark" role="img" aria-label="CIS Lab logo"><use href="#cis-mark"></use></svg>
+				<div class="text">
+					CIS Lab @ Taipei Tech <br><span data-i18n="hero.sub">密碼學與資訊安全實驗室</span>
+				</div>
+				<div class="hero-actions">
+					<a class="hero-btn" href="#News"><i class="fa-solid fa-bullhorn"></i><span data-i18n="hero.news">最新消息</span></a>
+					<a class="hero-btn hero-btn--ghost" href="achievements.html"><i class="fa-solid fa-book-open"></i><span data-i18n="hero.pubs">論文發表</span></a>
 				</div>
 			</div>
 		</div>
-		<nav>
-			<div class="container">
-			<!--設定範圍-->
-				<div class="logo">
-					<a href="">
-						<div class="logo_img">
-							<div class="logo_img">CIS LAB</div>
-						</div>
-					</a>
+		<a class="scroll-cue" href="#News" data-i18n-aria="hero.cue" aria-label="往下看內容"><i class="fa-solid fa-chevron-down"></i></a>
+	</header>
+
+	<main>
+		<!-- ================= 最新消息 ================= -->
+		<section class="band" id="News">
+			<div class="band-inner">
+				<h1 data-i18n="news.title">最新消息</h1>
+				<div id="newsList" class="news-list">
+					<p class="state-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading…</p>
 				</div>
-				
-				<ul class="menu">
-					<li id="item0"><a href="#News">News</a></li>
-					<li id="item1"><a href="#About">About</a></li>
-					<li  id="item2"><a href="#Members">Members</a></li>
-					<li id="item3"><a href="#Project">Project</a></li>
-					<!--<li id="item4"><a href="#Publications">Publications</a></li>-->
-					<li id="item5"><a href="#LabCafe">Lab Corner</a></li>
-					<li id="item5"><a href="#Contact">Contact</a></li>
-				</ul>
+				<a class="more-btn" href="news.html"><i class="fa-solid fa-list-ul"></i><span data-i18n="news.all">查看全部公告</span><span class="more-count" id="newsAllCount"></span></a>
 			</div>
-		</nav>
-		<header>
-			<div class="container">
-				<div class="text-area" data-aos="fade-up">
-					<div class="text" data-aos="flip-up">
-						CIS Lab @ Taipei Tech <br> 密碼學與資訊安全實驗室
-					</div>
-				</div>
-			</div>
-		</header>
-		<main>
+		</section>
 
-			<article id="News" data-aos="fade-right">
-				<h1 data-aos="fade-right">重要消息!!</h1>
-				<section>
-					<div class="description">
-						<h2><p>[115年度入學實驗室新生已經額滿了！ 2026/09/15 ]</p></h2>
+		<!-- ================= 關於 + 實驗室一角 ================= -->
+		<section class="band band--alt" id="About">
+			<div class="band-inner">
+				<h1 data-i18n="about.title">關於我們</h1>
+				<div class="about-grid">
+					<div class="about-text">
+						<p class="lead" data-i18n="about.p1">密碼學與資訊安全實驗室(Cryptography and Information Security Lab)由陳昱圻博士主持，於2016年7月於元智大學資訊工程學系成立，於2023年7月轉至國立臺北科技大學資訊工程系。研究方向：主要是密碼學、資訊安全、隱私強化技術。（這句話最嚴肅是老師自己打的）</p>
+						<p data-i18n="about.p2">實驗室真實概況是充滿愛與歡樂的實驗室~</p>
+						<p data-i18n="about.p3">但是對於研究是非常認真謹慎~</p>
+						<p data-i18n="about.p4">這裡很好玩，有零食櫃以及冰箱，滿足空虛的心與胃^^</p>
+						<p data-i18n="about.p5">研究方向原則上都有主軸，但只要有相關興趣主題都可以提出!<br>(以上言論本實驗室保留最後解釋權)XD</p>
 					</div>
-				<p></p>
-				</section>
-			</article>
-
-			<article id="About" data-aos="fade-right">
-				<h1 data-aos="fade-right">About</h1>
-				<section>
-					<div class="description">
-						<p>密碼學與資訊安全實驗室(Cryptography and Information Security Lab)由陳昱圻博士主持，於2016年7月於元智大學資訊工程學系成立，於2023年7月轉至國立臺北科技大學資訊工程系。研究方向：主要是密碼學、資訊安全、隱私強化技術。（這句話最嚴肅是老師自己打的）</p>
-						<br>
-						<p>實驗室真實概況是充滿愛與歡樂的實驗室~ </p>
-						<p>但是對於研究是非常認真謹慎~</p>
-						<p>這裡很好玩，有零食櫃以及冰箱，滿足空虛的心與胃^^</p>
-						<!-- <p>實驗室同學也有帥哥美女，實驗室13樓風景也很水，歡迎一起來體驗^^</p> -->
-						<p></p>
-						<br>
-						<p>研究方向原則上都有主軸，但只要有相關興趣主題都可以提出!<br>
-							(以上言論本實驗室保留最後解釋權)XD</p>
-						
-					</div>
-				<p></p>
-				</section>
-			</article>
-			
-			<article id="Members" data-aos="fade-right">
-				<h1 data-aos="fade-right">Members</h1>
-				<section>
-					<div class="wrap">
-						<h2>老大：</h2>
-						<div class="image">
-							<div class="boss">
-								<div>	
-									<div class="boss_img">
-										<img src="image/boss.jpg">
-									</div>
-								</div>
-								<div>
-									<b>Yu-Chi Chen 陳昱圻</b>
-									<p class="pbold">：我的課很操，身心俱疲的那種，但我都不太當(ㄉㄤˋ)人</p>
-									<br>
-									<p>任教系所: 國立臺北科技大學 資訊工程系</p>
-									<p>研究領域: 密碼學、資訊安全、隱私強化技術</p>
-									<p>wycchen AT ntut.edu.tw</p>
-									<p>研究室:宏裕科技大樓1529</p>
-									
-									<a href="https://wycchen.github.io/" target="_blank">點擊了解更多Yu-Chi Chen ^3^</a>
-								</div>
-							</div>
-						</div>
-					</div>
-					<hr class="hr1">
-					<br>
-					<div class="wrap">
-						<h2>小夥伴：</h2><br>
-						<h2>博班修煉中：</h2>
-						<div class="image">
-							<div class="row">
-								<div class="std_img">
-									<p class="img_div">張震凡</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">施凱喆</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">陳宣宇</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">何柏翰</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="std_img">
-									<p class="img_div">張育丞</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div"></p>
-								</div>
-								<div class="std_img">
-									<p class="img_div"></p>
-								</div>
-								<div class="std_img">
-									<p class="img_div"></p>
-								</div>
-							</div>
-						</div>
-						<h2>老鳥拼命中(碩二含以上)：</h2>
-						<div class="image">
-							<div class="row">
-								<div class="std_img">
-									<p class="img_div">高振皓</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">鄭丞皓</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">陳恩</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">張凱婷</p>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="std_img">
-									<p class="img_div">蔡旻鈞</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">林哲維</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">余政達</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">徐瑋辰</p>
-								</div>
-							</div>
-						</div>
-					</br>
-						<h2>菜鳥努力中(碩一)：</h2>
-						<div class="image">
-							<div class="row">
-								<div class="std_img">
-									<p class="img_div">范姜芷妤</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">徐瑜彤</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">施宥丞</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">顏睿寬</p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="std_img">
-									<p class="img_div">馬永霖</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div"></p>
-								</div>
-								<div class="std_img">
-									<p class="img_div"></p>
-								</div>
-								<div class="std_img">
-									<p class="img_div"></p>
-								</div>
-								
-							</div>
-						</div>
-						<h2>AIS3助理：</h2>
-						<div class="image">
-							<div class="row">
-								<div class="std_img">
-									<p class="img_div">陳盈億</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div">張凱傑</p>
-								</div>
-								<div class="std_img">
-									<p class="img_div"></p>
-								</div>
-								<div class="std_img">
-									<p class="img_div"></p>
-								</div>
-							</div>
-						</div>
-
-						<br>
-						<br>
-						<a href="https://hackmd.io/@wycchen/LAB_alumni" target="_blank">點擊了解更多位列仙班的室友 ^3^</a>
-						<!--<h2>位列仙班（開個小玩笑，其實是指畢業學長姐）：</h2>
-							<br>
-							<div class="image">
-								<div class="row">
-									<div class="std_img">
-										<img src="image/1.jpg">
-										<p class="img_div">賴宗賢</p>
-									</div>
-									<div class="std_img">
-										<img src="image/2.jpg">
-										<p class="img_div">張廷宇</p>
-									</div>
-									<div class="std_img">
-										<img src="image/3.jpg">
-										<p class="img_div">顏薪展</p>
-									</div>
-									<div class="std_img">
-										<img src="image/4.jpg">
-										<p class="img_div">林姵妏</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="std_img">
-										<img src="image/5.jpg">
-										<p class="img_div">張桓齊</p>
-									</div>
-									<div class="std_img">
-										<p class="img_div">洪章景</p>
-									</div>
-									<div class="std_img">
-										<p class="img_div">謝宗辰</p>
-									</div>
-									<div class="std_img">
-									
-									</div>
-								</div>
-								<br>
-								<br>
-								<a href="https://hackmd.io/@wycchen/LAB_alumni" target="_blank">點擊了解更多位列仙班的室友 ^3^</a>					
-							</div>-->
-						
-					</div>
-				</section>
-			</article>
-			<article id="Project" data-aos="fade-right">
-				<h1 data-aos="fade-right">Project</h1>
-				<section>
-				<div class="project_list">
-					<ul >
-						<li>
-							<div class="project_title">保有隱私機器學習與隱私強化技術</div>
-							<!-- <div class="project_des">description</div> -->
-						</li>
-						<hr class="hr2">
-						<li>
-							<div class="project_title">安全分散式計算與相關雲端資料應用</div>
-							<!-- <div class="project_des">description</div> -->
-						</li>
-						<hr class="hr2">
-						<li>
-							<div class="project_title">零知識證明協定實現可壓縮驗證於機器學習</div>
-							<!-- <div class="project_des">description</div> -->
-						</li>
-						<hr class="hr2">
-						<li>
-							<div class="project_title">資料分發服務上的隱私與安全存取於機器人系統</div>
-							<!-- <div class="project_des">description</div> -->
-						</li>
-						<hr class="hr2">
-						<li>
-							<div class="project_title">教育部資安人才培育計畫 (這不是研究或產學)</div>
-							<!-- <div class="project_des">description</div> -->
-						</li>
-						<hr class="hr2">
-						<!-- <li>
-							<div class="project_title">密碼學與區塊鏈理論與應用研究</div>
-							<div class="project_des">description</div>
-						</li> -->
-						<!--<hr class="hr2">-->
+					<ul class="about-facts">
+						<li><i class="fa-solid fa-calendar-plus"></i><div><b>2016</b><span data-i18n="fact.founded">成立於元智大學</span></div></li>
+						<li><i class="fa-solid fa-building-columns"></i><div><b>2023</b><span data-i18n="fact.moved">移至臺北科技大學</span></div></li>
+						<li><i class="fa-solid fa-user-shield"></i><div><b data-i18n="fact.focusT">研究主軸</b><span data-i18n="fact.focus">密碼學、資訊安全、隱私強化技術</span></div></li>
 					</ul>
 				</div>
-				</section>
-			</article>
-			<!--	<article id="Publications">
-				<h1 data-aos="fade-right">publications</h1>
-					<section>
-					
-					</section>
-				</article>-->
-				
-			
-			<article id="LabCafe" data-aos="fade-right">
-				<h1 data-aos="fade-right">Lab Corner</h1>
-				<section>
-					<div class="contactus">
-						<div class="childdiv-labcafe">
-							<h3>全自動咖啡機</h3>
-							<img src="./image/coffee_machine.jpg" alt="cooffee_machine" width="300" height="360">
-						</div>
-						<div class="childdiv-labcafe">
-							<h3>眾多選擇的咖啡豆</h3>
-							<img src="./image/coffee_beans.jpg" alt="cooffee_machine" width="300" height="360">
-						</div>
-						<div class="childdiv-labcafe">
-							<h3>數之不盡的零食</h3>
-							<img src="./image/foods.jpg" alt="cooffee_machine" width="300" height="360">
-						</div>
-					</div>
-				</section>
-			</article>
 
-			<article id="Contact" data-aos="fade-right">
-				<h1 data-aos="fade-right">Contact us</h1>
-				<section>
-					<div class="contactus">
-						<div class="childdiv">
-							<h3>OFFICE ADDRESS</h3>
-							<p>國立臺北科技大學宏裕科技大樓1322</p>
-							<p>(106台北市大安區新生南路一段3號)</p>
-							<br>
-							<div class="map">
-								<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14458.822273320613!2d121.5338784!3d25.0440642!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442a97cd4962b0b%3A0x75144e30dbb37ee6!2z5ZyL56uL6Ie65YyX56eR5oqA5aSn5a245a6P6KOV56eR5oqA56CU56m25aSn5qiT!5e0!3m2!1szh-TW!2stw!4v1677507946281!5m2!1szh-TW!2stw"
-								style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-							</div>
-						</div>
-						<div class="childdiv">
-							<h3>PHONE NUMBER</h3>
-							<p> +886-2-2771-2171 ext. 4278</p>
-						</div>
-						<div class="childdiv">
-							<h3>EMAIL</h3>
-							<p> cislab.taipeitech AT gmail.com (請自行加入)</p>
-						</div>
+				<div class="corner" id="LabCafe">
+					<h2><i class="fa-solid fa-mug-hot"></i> <span data-i18n="corner.title">實驗室一角</span></h2>
+					<div class="gallery">
+						<figure>
+							<img src="image/coffee_machine.jpg" alt="" width="300" height="360" loading="lazy">
+							<figcaption data-i18n="corner.c1">全自動咖啡機</figcaption>
+						</figure>
+						<figure>
+							<img src="image/coffee_beans.jpg" alt="" width="300" height="360" loading="lazy">
+							<figcaption data-i18n="corner.c2">眾多選擇的咖啡豆</figcaption>
+						</figure>
+						<figure>
+							<img src="image/foods.jpg" alt="" width="300" height="360" loading="lazy">
+							<figcaption data-i18n="corner.c3">數之不盡的零食</figcaption>
+						</figure>
 					</div>
-				</section>
-			</article>
-			
-		</main>
-		<footer>
-			<div class="container">
-			
+				</div>
 			</div>
-		</footer>
-	<script>
-		AOS.init({
-			duration:1000,
-		});
-	</script>
-	<script src="/js/jquery.min.js"></script>
-	<script src="/js/jquery.stellar.min.js"></script>
-	<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
-	<script src="index.js"></script>
-	</body>
+		</section>
 
+		<!-- ================= 實驗室生活：出遊與活動相簿（content/gallery.md） ================= -->
+		<section class="band" id="Life">
+			<div class="band-inner">
+				<div class="band-head">
+					<h1 data-i18n="life.title">實驗室生活</h1>
+					<div class="seg" role="group" id="lifeFilter" data-i18n-aria="life.filter" aria-label="相簿分類" hidden></div>
+				</div>
+				<p class="band-desc" data-i18n="life.desc">出遊、聚餐、研討會與各種活動的紀錄。滑鼠移到照片上可以看說明，點照片會像 IG 貼文一樣打開。</p>
+				<ul class="album-chips" id="lifeChips" data-i18n-aria="life.albums" aria-label="相簿"></ul>
+				<div class="carousel" id="lifeCarousel" role="region" aria-roledescription="carousel" data-i18n-aria="life.carousel" aria-label="活動照片輪播">
+					<div class="car-track" id="lifeTrack" tabindex="0" data-i18n-aria="life.track" aria-label="照片，可用左右方向鍵切換"></div>
+					<button type="button" class="car-arrow car-prev" id="lifePrev" data-i18n-aria="ui.prevPhoto" aria-label="上一張"><i class="fa-solid fa-chevron-left"></i></button>
+					<button type="button" class="car-arrow car-next" id="lifeNext" data-i18n-aria="ui.nextPhoto" aria-label="下一張"><i class="fa-solid fa-chevron-right"></i></button>
+					<div class="car-bar">
+						<button type="button" class="car-play" id="lifePlay" aria-pressed="true" aria-label="暫停輪播"><i class="fa-solid fa-pause"></i></button>
+						<span class="dlg-pos" id="lifePos" aria-live="polite"></span>
+					</div>
+				</div>
+				<p class="state-msg" id="lifeEmpty" hidden><i class="fa-regular fa-images"></i> <span data-i18n="life.empty">相簿整理中，敬請期待！</span></p>
+			</div>
+		</section>
+
+		<!-- ================= 成員 / 歷屆成員 ================= -->
+		<section class="band band--alt" id="Members">
+			<div class="band-inner">
+				<div class="band-head">
+					<h1 data-i18n="members.title">實驗室成員</h1>
+					<div class="seg" role="tablist" data-i18n-aria="members.tabs" aria-label="成員分類">
+						<button type="button" role="tab" id="tab-current" aria-controls="panel-current" aria-selected="true"><i class="fa-solid fa-users"></i> <span data-i18n="members.tabCurrent">現任成員</span></button>
+						<button type="button" role="tab" id="tab-alumni" aria-controls="Alumni" aria-selected="false" tabindex="-1"><i class="fa-solid fa-graduation-cap"></i> <span data-i18n="members.tabAlumni">歷屆成員</span><span class="tab-count" id="alumniCount"></span></button>
+					</div>
+				</div>
+
+				<div class="tab-panel" id="panel-current" role="tabpanel" aria-labelledby="tab-current">
+					<div class="boss">
+						<img class="boss-photo" src="image/boss.jpg" alt="Yu-Chi Chen 陳昱圻" width="300" height="322">
+						<div class="boss-info">
+							<button type="button" class="boss-role" id="bossTag" aria-describedby="bossTip"><span data-i18n="members.boss">老大</span><span class="boss-tip" id="bossTip" role="tooltip"></span></button>
+							<h2>Yu-Chi Chen 陳昱圻</h2>
+							<p class="pbold boss-quote"><span class="quote-glow" data-i18n="boss.quote">「我的課很操，身心俱疲的那種，但我都不太當(ㄉㄤˋ)人」</span></p>
+							<ul class="boss-meta">
+								<li><i class="fa-solid fa-building-columns"></i><span data-i18n="boss.dept">國立臺北科技大學 資訊工程系 教授</span></li>
+								<li><i class="fa-solid fa-flask"></i><span data-i18n="boss.field">密碼學、資訊安全、隱私強化技術</span></li>
+								<li><i class="fa-solid fa-door-open"></i><span data-i18n="boss.office">研究室：宏裕科技大樓 1529</span></li>
+								<li><i class="fa-solid fa-at"></i><span>wycchen AT ntut.edu.tw</span>
+									<button type="button" class="copy-btn" data-copy-user="wycchen" data-copy-domain="ntut.edu.tw"><i class="fa-regular fa-copy"></i><span data-i18n="ui.copy">複製</span></button></li>
+							</ul>
+							<a class="boss-link" href="https://wycchen.github.io/" target="_blank" rel="noopener">
+								<i class="fa-solid fa-user-tie boss-link-icon" aria-hidden="true"></i>
+								<span class="boss-link-text"><b data-i18n="boss.more">想更了解 Yu-Chi Chen？</b><small data-i18n="boss.moreSub">個人網站・研究、教學與經歷</small></span>
+								<span class="boss-link-kao" aria-hidden="true">^3^</span>
+								<i class="fa-solid fa-arrow-up-right-from-square boss-link-go" aria-hidden="true"></i>
+							</a>
+						</div>
+					</div>
+					<p class="band-desc members-hint" data-i18n="members.hint">點成員的名字可以看個人網頁、Email 等資訊。</p>
+					<div id="membersList" class="members-list">
+						<p class="state-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading…</p>
+					</div>
+				</div>
+
+				<!-- 畢業校友：內容由 content/alumni.md 管理 -->
+				<div class="tab-panel" id="Alumni" role="tabpanel" aria-labelledby="tab-alumni" hidden>
+					<p class="band-desc" data-i18n="alumni.intro">已經畢業的學長姐們，點名字可以看他們的戰績與近況。</p>
+					<div class="alumni-tools">
+						<label class="search-box">
+							<i class="fa-solid fa-magnifying-glass"></i>
+							<input type="search" id="alumniSearch" data-i18n-ph="alumni.search" placeholder="搜尋姓名、戰績…" autocomplete="off">
+						</label>
+						<div class="year-range">
+							<i class="fa-regular fa-calendar"></i>
+							<span data-i18n="alumni.range">畢業年份</span>
+							<select id="alumniFrom" data-i18n-aria="alumni.from" aria-label="起始年份"></select>
+							<span aria-hidden="true">–</span>
+							<select id="alumniTo" data-i18n-aria="alumni.to" aria-label="結束年份"></select>
+						</div>
+						<button type="button" class="link-btn" id="alumniReset" hidden><i class="fa-solid fa-rotate-left"></i><span data-i18n="alumni.reset">清除篩選</span></button>
+					</div>
+					<p class="alumni-summary" id="alumniSummary" aria-live="polite"></p>
+					<div id="alumniList" class="alumni-list">
+						<p class="state-msg"><i class="fa-solid fa-spinner fa-spin"></i> Loading…</p>
+					</div>
+					<button type="button" class="more-btn" id="alumniMore" hidden></button>
+				</div>
+			</div>
+		</section>
+
+		<!-- ================= 研究計畫 ================= -->
+		<section class="band" id="Project">
+			<div class="band-inner">
+				<h1 data-i18n="project.title">研究計畫</h1>
+				<ul class="project_list">
+					<li><i class="fa-solid fa-user-shield"></i><span class="project_title" data-i18n="project.p1">保有隱私機器學習與隱私強化技術</span></li>
+					<li><i class="fa-solid fa-cloud"></i><span class="project_title" data-i18n="project.p2">安全分散式計算與相關雲端資料應用</span></li>
+					<li><i class="fa-solid fa-square-check"></i><span class="project_title" data-i18n="project.p3">零知識證明協定實現可壓縮驗證於機器學習</span></li>
+					<li><i class="fa-solid fa-robot"></i><span class="project_title" data-i18n="project.p4">資料分發服務上的隱私與安全存取於機器人系統</span></li>
+					<li><i class="fa-solid fa-chalkboard-user"></i><span class="project_title" data-i18n="project.p5">教育部資安人才培育計畫 (這不是研究或產學)</span></li>
+				</ul>
+
+				<!-- 論文與榮譽在獨立頁面 achievements.html -->
+				<h2 class="achieve-head"><i class="fa-solid fa-medal"></i> <span data-i18n="achieve.title">研究成果</span></h2>
+				<div class="achieve-links">
+					<a class="achieve-card" href="achievements.html#Publications">
+						<i class="fa-solid fa-book-open achieve-icon"></i>
+						<span class="achieve-text">
+							<b data-i18n="pubs.title">論文發表</b>
+							<span><span class="achieve-num" id="pubsTotal"></span><span data-i18n="achieve.pubsDesc">篇精選論文（期刊、研討會）</span></span>
+						</span>
+						<i class="fa-solid fa-arrow-right achieve-go" aria-hidden="true"></i>
+					</a>
+					<a class="achieve-card" href="achievements.html#Honors">
+						<i class="fa-solid fa-trophy achieve-icon"></i>
+						<span class="achieve-text">
+							<b data-i18n="honors.title">榮譽事蹟</b>
+							<span><span class="achieve-num" id="honorsTotal"></span><span data-i18n="achieve.honorsDesc">項精選榮譽（學生、教師）</span></span>
+						</span>
+						<i class="fa-solid fa-arrow-right achieve-go" aria-hidden="true"></i>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- ================= 聯絡 ================= -->
+		<section class="band band--alt" id="Contact">
+			<div class="band-inner">
+				<h1 data-i18n="contact.title">聯絡我們</h1>
+				<div class="contact-grid">
+					<ul class="contact-list">
+						<li>
+							<i class="fa-solid fa-location-dot"></i>
+							<div>
+								<h3 data-i18n="contact.addrTitle">實驗室地址</h3>
+								<p data-i18n="contact.addr1">國立臺北科技大學 宏裕科技大樓 1322</p>
+								<p class="muted" data-i18n="contact.addr2">106 台北市大安區新生南路一段 3 號</p>
+								<a class="text-link" href="https://www.google.com/maps/search/?api=1&amp;query=%E5%9C%8B%E7%AB%8B%E8%87%BA%E5%8C%97%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%B8%E5%AE%8F%E8%A3%95%E7%A7%91%E6%8A%80%E7%A0%94%E7%A9%B6%E5%A4%A7%E6%A8%93" target="_blank" rel="noopener"><span data-i18n="contact.navigate">在 Google 地圖開啟</span>&nbsp;<i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+							</div>
+						</li>
+						<li>
+							<i class="fa-solid fa-phone"></i>
+							<div>
+								<h3 data-i18n="contact.phoneTitle">電話</h3>
+								<p><a href="tel:+886227712171,4278">+886-2-2771-2171 ext. 4278</a></p>
+							</div>
+						</li>
+						<li>
+							<i class="fa-solid fa-envelope"></i>
+							<div>
+								<h3 data-i18n="contact.mailTitle">Email</h3>
+								<p>cislab.taipeitech AT gmail.com
+									<button type="button" class="copy-btn" data-copy-user="cislab.taipeitech" data-copy-domain="gmail.com"><i class="fa-regular fa-copy"></i><span data-i18n="ui.copy">複製</span></button></p>
+							</div>
+						</li>
+						<li>
+							<i class="fa-solid fa-train-subway"></i>
+							<div>
+								<h3 data-i18n="contact.mrtTitle">交通</h3>
+								<p data-i18n="contact.mrt">鄰近捷運忠孝新生站（板南線、中和新蘆線）</p>
+							</div>
+						</li>
+					</ul>
+					<div class="map">
+						<iframe title="Google Map" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d14458.822273320613!2d121.5338784!3d25.0440642!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442a97cd4962b0b%3A0x75144e30dbb37ee6!2z5ZyL56uL6Ie65YyX56eR5oqA5aSn5a245a6P6KOV56eR5oqA56CU56m25aSn5qiT!5e0!3m2!1szh-TW!2stw!4v1677507946281!5m2!1szh-TW!2stw"
+							style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<footer>
+		<div class="container">
+			<div>
+				<p class="footer-title">
+					<svg class="footer-mark" aria-hidden="true"><use href="#cis-mark-bold"></use></svg>
+					<span class="brand-word" role="img" aria-label="CIS LAB"></span>
+				</p>
+				<p class="footer-sub" data-i18n="footer.sub">國立臺北科技大學 資訊工程系 密碼學與資訊安全實驗室</p>
+			</div>
+			<ul class="footer-links">
+				<li><a href="https://wycchen.github.io/" target="_blank" rel="noopener" aria-label="Yu-Chi Chen"><i class="fa-solid fa-user-tie"></i></a></li>
+				<li><a href="https://dblp.org/pid/13/4194-1.html" target="_blank" rel="noopener" aria-label="DBLP"><i class="fa-solid fa-book"></i></a></li>
+				<li><a href="https://github.com/cislab-ntut" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa-brands fa-github"></i></a></li>
+				<li><a href="#top" data-i18n-aria="footer.top" aria-label="回到頂端"><i class="fa-solid fa-arrow-up"></i></a></li>
+			</ul>
+		</div>
+	</footer>
+
+	<!-- 消息內文彈窗 -->
+	<dialog id="newsDialog" class="alum-dialog news-dialog" aria-labelledby="newsDlgTitle">
+		<div class="dlg-inner">
+			<button type="button" class="dlg-close" id="newsClose" data-i18n-aria="ui.close" aria-label="關閉"><i class="fa-solid fa-xmark"></i></button>
+			<div id="newsDlgBody"></div>
+			<div class="dlg-nav">
+				<button type="button" id="newsPrev"><i class="fa-solid fa-chevron-left"></i><span data-i18n="ui.prevNews">上一則</span></button>
+				<span class="dlg-pos" id="newsPos"></span>
+				<button type="button" id="newsNext"><span data-i18n="ui.nextNews">下一則</span><i class="fa-solid fa-chevron-right"></i></button>
+			</div>
+		</div>
+	</dialog>
+
+	<!-- 校友詳細資訊彈窗 -->
+	<dialog id="alumDialog" class="alum-dialog" aria-labelledby="alumDlgName">
+		<div class="dlg-inner">
+			<button type="button" class="dlg-close" id="alumClose" data-i18n-aria="ui.close" aria-label="關閉"><i class="fa-solid fa-xmark"></i></button>
+			<div id="alumDlgBody"></div>
+			<div class="dlg-nav">
+				<button type="button" id="alumPrev"><i class="fa-solid fa-chevron-left"></i><span data-i18n="ui.prev">上一位</span></button>
+				<span class="dlg-pos" id="alumPos"></span>
+				<button type="button" id="alumNext"><span data-i18n="ui.next">下一位</span><i class="fa-solid fa-chevron-right"></i></button>
+			</div>
+		</div>
+	</dialog>
+
+	<!-- 相簿大圖：仿 Instagram 貼文 -->
+	<dialog id="photoDialog" class="alum-dialog photo-dialog" data-i18n-aria="life.viewer" aria-label="照片">
+		<div class="ig-post">
+			<button type="button" class="dlg-close" id="photoClose" data-i18n-aria="ui.close" aria-label="關閉"><i class="fa-solid fa-xmark"></i></button>
+			<div class="ig-media" id="photoMedia">
+				<img class="photo-big" id="photoDlgImg" src="data:," alt="">
+				<button type="button" class="ig-arrow ig-prev" id="photoPrev" data-i18n-aria="ui.prevPhoto" aria-label="上一張"><i class="fa-solid fa-chevron-left"></i></button>
+				<button type="button" class="ig-arrow ig-next" id="photoNext" data-i18n-aria="ui.nextPhoto" aria-label="下一張"><i class="fa-solid fa-chevron-right"></i></button>
+				<div class="ig-dots" id="photoDots"></div>
+			</div>
+			<div class="ig-side">
+				<div class="ig-head" id="photoHead"></div>
+				<div class="ig-body" id="photoBody"></div>
+				<div class="ig-foot" id="photoFoot"></div>
+			</div>
+		</div>
+	</dialog>
+
+	<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+	<!-- Markdown 解析與安全過濾 -->
+	<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+	<script src="js/i18n.js?v=20261007"></script>
+	<script src="js/sparkle.js?v=20261007"></script>
+	<script src="js/core.js?v=20261007"></script>
+	<script src="js/content.js?v=20261007"></script>
+	<script src="js/gallery.js?v=20261007"></script>
+	<script src="index.js?v=20261007"></script>
+</body>
 </html>
