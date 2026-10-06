@@ -7,7 +7,7 @@
 	var CIS = window.CIS;
 	var root = document.documentElement;
 	var $ = CIS.$, lang = CIS.lang, ui = CIS.ui, esc = CIS.esc, md = CIS.md, mdInline = CIS.mdInline,
-		bi = CIS.bi, getText = CIS.getText, failMsg = CIS.failMsg, isAward = CIS.isAward;
+		bi = CIS.bi, getText = CIS.getText, failMsg = CIS.failMsg;
 
 	var LIMIT = { news: 5, alumniYears: 3 };   // 首頁最新消息最多 5 則；校友預設顯示最近 3 屆
 	var expanded = { alumni: false };
@@ -106,8 +106,18 @@
 
 	/* ---------------- 歷屆成員 ---------------- */
 
-	var alumData = [], alumState = { q: '', from: null, to: null }, alumShown = [];
-	var ERA_GRADIENTS = ['linear-gradient(135deg, #f37335, #f68084)', 'linear-gradient(135deg, #7f9cf5, #30d2be)'];
+	var alumData = [], alumState = { q: '', from: null, to: null, deg: 'all' }, alumShown = [];
+	// 各校代表色：北科藍綠漸層、元智藍到紅；其他學校用實驗室的橘粉色
+	var SCHOOL_GRADIENTS = [
+		{ re: /臺北科技|台北科技|Taipei Tech|NTUT/i, g: 'linear-gradient(135deg, #2f80ed, #30d2be)' },
+		{ re: /元智|Yuan Ze|YZU/i, g: 'linear-gradient(135deg, #4d9fff, #ff5c7a)' }
+	];
+	var ERA_GRADIENTS = ['linear-gradient(135deg, #f37335, #f68084)', 'linear-gradient(135deg, #a6c0fe, #f68084)'];
+	function eraGradient(era, i) {
+		var name = [era.zh, era.en].join(' ');
+		for (var k = 0; k < SCHOOL_GRADIENTS.length; k++) if (SCHOOL_GRADIENTS[k].re.test(name)) return SCHOOL_GRADIENTS[k].g;
+		return ERA_GRADIENTS[i % ERA_GRADIENTS.length];
+	}
 
 	function alumYears() {
 		var ys = [];
@@ -128,13 +138,26 @@
 
 	function filterActive() {
 		var ys = alumYears();
-		return !!alumState.q || (ys.length && (alumState.from !== ys[ys.length - 1] || alumState.to !== ys[0]));
+		return !!alumState.q || alumState.deg !== 'all' || (ys.length && (alumState.from !== ys[ys.length - 1] || alumState.to !== ys[0]));
 	}
 
 	function personMatch(p, q) {
 		if (!q) return true;
-		var hay = [p.zh, p.en, p.note, p.now].concat(p.works).join(' ').replace(/\*/g, '').toLowerCase();
+		var hay = [p.zh, p.en, p.note, p.now, p.thesis].join(' ').toLowerCase();   // 中英文題目都能搜尋
 		return hay.indexOf(q) >= 0;
+	}
+
+	// 學位標記：碩士／博士
+	function degBadge(p) {
+		return p.degree ? '<span class="deg deg--' + p.degree + '">' + esc(ui(p.degree === 'phd' ? 'degPhd' : 'degMs')) + '</span>' : '';
+	}
+	function drawDegreeFilter() {
+		var has = {};
+		alumData.forEach(function (e) { e.years.forEach(function (y) { y.people.forEach(function (p) { has[p.degree] = true; }); }); });
+		var box = $('alumniDegree');
+		box.hidden = !(has.ms && has.phd);   // 有博士畢業的人之後才會出現
+		if (box.hidden) alumState.deg = 'all';
+		box.querySelectorAll('[data-deg]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-deg') === alumState.deg ? 'true' : 'false'); });
 	}
 
 	function drawAlumni() {
@@ -146,15 +169,17 @@
 		var q = alumState.q.trim().toLowerCase();
 		var lo = Math.min(alumState.from, alumState.to), hi = Math.max(alumState.from, alumState.to);
 		var active = filterActive();
-		var yearBudget = active || expanded.alumni ? Infinity : LIMIT.alumniYears;
-		var hiddenYears = 0, matched = 0;
+		// 預設只顯示最近幾個畢業年份（不同學校同一年都算同一屆）
+		var recent = active || expanded.alumni ? null : alumYears().slice(0, LIMIT.alumniYears);
+		var hiddenSet = {};
+		var matched = 0;
 		alumShown = [];
 
 		var html = alumData.map(function (era, ei) {
 			var groups = era.years.map(function (y) {
 				var n = parseInt(y.year, 10);
 				if (!isNaN(n) && (n < lo || n > hi)) return null;
-				var ps = y.people.filter(function (p) { return personMatch(p, q); });
+				var ps = y.people.filter(function (p) { return personMatch(p, q) && (alumState.deg === 'all' || p.degree === alumState.deg); });
 				if (!ps.length) return null;
 				return { y: y, ps: ps };
 			}).filter(Boolean);
@@ -162,7 +187,7 @@
 			var visible = [];
 			groups.forEach(function (g) {
 				matched += g.ps.length;
-				if (yearBudget > 0) { visible.push(g); yearBudget--; } else hiddenYears++;
+				if (!recent || recent.indexOf(parseInt(g.y.year, 10)) >= 0) visible.push(g); else hiddenSet[g.y.year] = true;
 			});
 			if (!visible.length) return '';
 
@@ -172,25 +197,24 @@
 				'<b>' + esc(CIS.secName(era)) + '</b>' +
 				'<small>' + esc(ui('eraRange')(range, era.count)) + '</small></span></div>' : '';
 
-			return '<div class="era era-' + ei + '" style="--g:' + ERA_GRADIENTS[ei % ERA_GRADIENTS.length] + '">' + divider +
+			return '<div class="era era-' + ei + '" style="--g:' + eraGradient(era, ei) + '">' + divider +
 				visible.map(function (g) {
 					var label = /^\d{4}$/.test(g.y.year) ? ui('alumniYear')(g.y.year) : g.y.year;
 					return '<div class="alum-year"><h3>' + esc(label) + '<span class="count">' + ui('people')(g.ps.length) + '</span></h3>' +
 						'<ul class="alum-grid">' + g.ps.map(function (p) {
 							var main = en && p.en ? p.en : p.zh, sub = en ? (p.en ? p.zh : '') : p.en;
+							// 英文名的連字號換成不斷行的連字號：放不下時只在空格處換行（例如 Carlomagno Amaya Flores）
+							var nb = function (v) { return esc(v).replace(/-/g, '\u2011'); };
 							var inner = '<span class="avatar avatar--sm" aria-hidden="true">' + esc(avatarText(p.zh)) + '</span>' +
-								'<span class="alum-text"><span class="alum-name">' + esc(main) + '</span>' +
-								(sub ? '<span class="alum-en">' + esc(sub) + '</span>' : '') + '</span>';
-							p.grad = ERA_GRADIENTS[ei % ERA_GRADIENTS.length];
+								// 學位標記放在中文名字那一行（中文名字短，英文名才有完整寬度）
+								(en && sub
+									? '<span class="alum-text"><span class="alum-name alum-name--latin">' + nb(main) + '</span>' +
+										'<span class="alum-line"><span class="alum-en">' + esc(sub) + '</span>' + degBadge(p) + '</span></span>'
+									: '<span class="alum-text"><span class="alum-line"><span class="alum-name">' + esc(main) + '</span>' + degBadge(p) + '</span>' +
+										(sub ? '<span class="alum-en">' + nb(sub) + '</span>' : '') + '</span>');
+							p.grad = eraGradient(era, ei);
 							var idx = alumShown.push(p) - 1;
-							var awards = p.works.filter(isAward).length;
-							var others = p.works.length - awards;
-							var meta = '<span class="alum-meta">' +
-								(awards ? '<i class="fa-solid fa-trophy" title="' + ui('awards') + '"></i><span>' + awards + '</span>' : '') +
-								(others ? '<i class="fa-solid fa-book-open" title="' + ui('works') + '"></i><span>' + others + '</span>' : '') +
-								'</span>';
-							if (!p.works.length) meta = '';
-							return '<li><button type="button" class="alum-chip has-info" data-person="a:' + idx + '" aria-haspopup="dialog">' + inner + meta + '</button></li>';
+							return '<li><button type="button" class="alum-chip has-info" data-person="a:' + idx + '" aria-haspopup="dialog">' + inner + '</button></li>';
 						}).join('') + '</ul></div>';
 				}).join('') + '</div>';
 		}).join('');
@@ -203,6 +227,7 @@
 			: ui('alumTotal')(total, ys[ys.length - 1], ys[0]);
 		$('alumniReset').hidden = !active;
 
+		var hiddenYears = Object.keys(hiddenSet).length;
 		var more = $('alumniMore');
 		if (active) { more.hidden = true; }
 		else if (hiddenYears > 0 || expanded.alumni) {
@@ -230,9 +255,16 @@
 			drawAlumni();
 		});
 	});
+	$('alumniDegree').addEventListener('click', function (e) {
+		var b = e.target.closest('[data-deg]');
+		if (!b) return;
+		alumState.deg = b.getAttribute('data-deg');
+		drawDegreeFilter();
+		drawAlumni();
+	});
 	$('alumniReset').addEventListener('click', function () {
 		var ys = alumYears();
-		alumState.q = ''; $('alumniSearch').value = '';
+		alumState.q = ''; $('alumniSearch').value = ''; alumState.deg = 'all'; drawDegreeFilter();
 		alumState.from = ys[ys.length - 1]; alumState.to = ys[0];
 		$('alumniFrom').value = alumState.from; $('alumniTo').value = alumState.to;
 		drawAlumni();
@@ -263,15 +295,17 @@
 		dlgList = k; dlgIdx = i;
 		var en = lang() === 'en', isAlum = p.kind === 'alumni';
 		var main = en && p.en ? p.en : p.zh, sub = en ? (p.en ? p.zh : '') : p.en;
-		var awards = p.works.filter(isAward), pubs = p.works.filter(function (w) { return !isAward(w); });
 
 		var tags = '';
 		if (isAlum) {
-			if (p.year) tags += '<span class="pill"><i class="fa-solid fa-graduation-cap"></i> ' + esc(ui('alumniYear')(p.year)) + '</span>';
+			if (p.degree) tags += '<span class="pill deg-pill deg--' + p.degree + '"><i class="fa-solid fa-graduation-cap"></i> ' + esc(ui(p.degree === 'phd' ? 'gradPhd' : 'gradMs')) + '</span>';
+			if (p.year) tags += '<span class="pill"><i class="fa-regular fa-calendar"></i> ' + esc(ui('alumniYear')(p.year)) + '</span>';
 			if (p.era && p.era.zh) tags += '<span class="pill"><i class="fa-solid fa-building-columns"></i> ' + esc(CIS.secName(p.era)) + '</span>';
+			if (p.stillHere) tags += '<span class="pill pill--now"><i class="fa-solid fa-circle"></i> ' + esc(ui('stillHere')) + '</span>';
 		} else {
 			tags += '<span class="pill pill--now"><i class="fa-solid fa-circle"></i> ' + ui('currentMember') + '</span>';
 			if (p.group) tags += '<span class="pill">' + esc(CIS.secName(p.group)) + '</span>';
+			if (p.msYear) tags += '<span class="pill deg-pill deg--ms"><i class="fa-solid fa-graduation-cap"></i> ' + esc(ui('msGrad')(p.msYear)) + '</span>';
 		}
 
 		var h = '<div class="dlg-head">' +
@@ -283,8 +317,8 @@
 		// 共同指導（例如清大資工共指的博士生）
 		if (p.coadvisor) {
 			h += '<div class="co-box"><i class="fa-solid fa-handshake"></i><div>' +
-				'<b>' + ui('coTitle') + '</b>' +
-				'<p>' + ui('coMain') + mdInline(bi(p.coadvisor)) + '</p>' +
+				'<b>' + ui(isAlum ? 'coTitleAlum' : 'coTitle') + '</b>' +
+				'<p>' + ui(isAlum ? 'coWith' : 'coMain') + mdInline(bi(p.coadvisor)) + '</p>' +
 				'<p class="muted">' + ui('coTail') + '</p></div></div>';
 		}
 
@@ -295,13 +329,16 @@
 			(p.note ? infoRow('fa-circle-info', ui('note'), mdInline(bi(p.note))) : '') +
 			'</dl>';
 
-		if (awards.length) {
-			h += '<h3><i class="fa-solid fa-trophy"></i> ' + ui('awards') + '</h3><ul class="dlg-chips dlg-chips--award">' +
-				awards.map(function (w) { return '<li>' + mdInline(w.replace(/^\*\*|\*\*$/g, '')) + '</li>'; }).join('') + '</ul>';
-		}
-		if (pubs.length) {
-			h += '<h3><i class="fa-solid fa-book-open"></i> ' + ui('works') + '</h3><ul class="dlg-chips">' +
-				pubs.map(function (w) { return '<li>' + mdInline(w) + '</li>'; }).join('') + '</ul>';
+		// 畢業論文：題目可寫「中文 // English // 日本語」，有連結就可以點
+		if (p.thesis) {
+			// 英文、日文頁面都顯示英文題目（沒有英文題目時才顯示中文），下方小字附上中文原題
+			var tp = String(p.thesis).split(/\s+\/\/\s+/), zhMode = CIS.lang() === 'zh';
+			var shown = zhMode ? tp[0] : (tp[1] || tp[0]);
+			var t = esc(shown), alt = zhMode ? '' : tp[0];
+			h += '<h3><i class="fa-solid fa-scroll"></i> ' + ui('thesis') + '</h3><div class="thesis-box">' +
+				(p.thesisUrl ? '<a href="' + esc(p.thesisUrl) + '" target="_blank" rel="noopener">' + t + ' <i class="fa-solid fa-arrow-up-right-from-square"></i></a>' : '<p class="thesis-title">' + t + '</p>') +
+				(alt && alt !== shown ? '<p class="thesis-alt">' + esc(alt) + '</p>' : '') +
+				'<p class="thesis-meta">' + esc([p.era && p.era.zh ? CIS.secName(p.era) : '', p.year].filter(Boolean).join(' · ')) + '</p></div>';
 		}
 		$('alumDlgBody').innerHTML = h;
 		$('alumPos').textContent = (i + 1) + ' / ' + list.length;
@@ -376,6 +413,7 @@
 			drawMembers(d.members);
 			alumData = d.alumni;
 			fillYearSelects();
+			drawDegreeFilter();
 			drawAlumni();
 			return Promise.all([
 				// 論文、榮譽在 achievements.html；首頁只取筆數
