@@ -19,7 +19,8 @@
 	--header-grad: linear-gradient(120deg, #a6c0fe 0%, #f68084 100%);
 	--h1: #f27b13;
 	--h1-glow: #fcd0c5;
-	--footer-bg: #000000;
+	--footer-bg: #1d1830;
+	--footer-grad: linear-gradient(115deg, #1b2440 0%, #2e2247 45%, #4a2440 75%, #5b2a35 100%);
 	--footer-text: #ffffff;
 	--ticker-bg: #fff4f3;
 	--accent: #ed6ea0;
@@ -43,6 +44,7 @@
 	--h1: #ff9a3d;
 	--h1-glow: rgba(242, 123, 19, .35);
 	--footer-bg: #110e14;
+	--footer-grad: linear-gradient(115deg, #0f1424 0%, #1c1530 45%, #2d1729 75%, #351a22 100%);
 	--footer-text: #e9dfe7;
 	--ticker-bg: #2a2230;
 	--accent: #ff8fb9;
@@ -508,6 +510,7 @@ h2 { font-size: clamp(19px, 2.2vw, 24px); }
 	border-radius: 24px;
 	background: var(--tint);
 }
+.seg[hidden] { display: none; }
 .seg button {
 	display: inline-flex;
 	align-items: center;
@@ -1415,21 +1418,40 @@ header.page-head {
 }
 .alum-text { display: flex; flex-direction: column; min-width: 0; flex: 1; line-height: 1.3; }
 .alum-name { font-weight: bold; }
+.alum-name, .alum-en { overflow-wrap: break-word; }
+.alum-line .alum-name, .alum-line .alum-en { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 英文模式的英文名比較長，字體稍微縮小，一行就放得下 */
+.alum-name--latin { font-size: 14.5px; letter-spacing: -.01em; }
+/* 名字後面接學位標記（論文、共同指導等資訊看彈窗） */
+.alum-line { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.alum-line .deg { flex: 0 0 auto; padding: 0 6px; font-size: 10.5px; }
 .alum-en { color: var(--text-soft); font-size: 12px; }
-.alum-meta {
-	display: inline-flex;
-	align-items: center;
-	gap: 4px;
-	flex: 0 0 auto;
-	padding: 1px 8px;
-	border-radius: 10px;
-	background: var(--surface);
-	color: var(--text-soft);
-	font-size: 12px;
+/* 學位標記：碩士（藍）／博士（金） */
+.deg {
+	padding: 1px 7px;
+	border-radius: 9px;
+	font-size: 11px;
 	font-weight: bold;
+	line-height: 1.5;
+	white-space: nowrap;
 }
-.alum-meta .fa-trophy { color: #f27b13; }
-.alum-meta i + span { margin-right: 2px; }
+.deg--ms { background: rgba(127, 156, 245, .16); color: #4f6fd8; }
+.deg--phd { background: linear-gradient(135deg, #fdc830, #f37335); color: #fff; box-shadow: 0 0 8px rgba(243, 115, 53, .35); }
+[data-theme="dark"] .deg--ms { color: #a9bcff; }
+.deg-pill.deg--ms { background: rgba(127, 156, 245, .16); color: #4f6fd8; }
+[data-theme="dark"] .deg-pill.deg--ms { color: #a9bcff; }
+.deg-pill.deg--phd { background: linear-gradient(135deg, #fdc830, #f37335); color: #fff; }
+.thesis-box {
+	padding: 12px 14px;
+	border-left: 3px solid #7f9cf5;
+	border-radius: 0 10px 10px 0;
+	background: var(--band-alt);
+}
+.thesis-box a, .thesis-title { display: block; color: var(--text); font-weight: bold; line-height: 1.5; text-decoration: none; }
+.thesis-box a:hover { color: var(--accent); }
+.thesis-box a i { font-size: .75em; color: var(--text-soft); }
+.thesis-alt { margin-top: 2px; color: var(--text-soft); font-size: 14px; }
+.thesis-meta { margin-top: 6px; color: var(--text-soft); font-size: 13px; }
 
 /* 彈窗 */
 .alum-dialog {
@@ -1521,13 +1543,6 @@ body:has(.alum-dialog[open]) { overflow: hidden; }
 	color: var(--text-soft);
 }
 .alum-dialog h3 i { color: #ec8c69; margin-right: 4px; }
-.dlg-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
-.dlg-chips li { padding: 4px 12px; border-radius: 14px; background: var(--band-alt); font-size: 14px; }
-.dlg-chips--award li {
-	color: #fff;
-	font-weight: bold;
-	background-image: linear-gradient(to right, #ed6ea0 0%, #ec8c69 100%);
-}
 .dlg-nav {
 	position: sticky;
 	bottom: 0;
@@ -1721,9 +1736,24 @@ iframe { display: block; width: 100%; height: 100%; min-height: 320px; }
 [data-theme="dark"] iframe { filter: invert(.9) hue-rotate(180deg); }
 
 /* ---------- Footer ---------- */
+/* 深藍 → 紫 → 酒紅的漸層，頂端一條實驗室主色（粉 → 橘 → 金）的細光帶 */
 footer {
+	position: relative;
 	color: var(--footer-text);
 	background-color: var(--footer-bg);
+	background-image:
+		radial-gradient(ellipse 60% 120% at 100% 0%, rgba(237, 110, 160, .18), transparent 60%),
+		radial-gradient(ellipse 50% 100% at 0% 100%, rgba(127, 156, 245, .16), transparent 60%),
+		var(--footer-grad);
+}
+footer::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background: linear-gradient(90deg, #ed6ea0, #ec8c69, #fdc830, #ec8c69, #ed6ea0);
 }
 footer .container {
 	width: min(1100px, 90%);
@@ -1930,12 +1960,13 @@ footer .container {
 	.alum-year h3 { flex-direction: row; align-items: center; gap: 8px; padding: 0; }
 	.alum-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 	.alum-chip { padding: 8px; gap: 8px; }
+	.alum-en { font-size: 11px; }
+	.alum-name--latin { font-size: 11.5px; letter-spacing: -.01em; }
+	.alum-chip { padding: 7px 6px; gap: 7px; }
+	.alum-chip .avatar.avatar--sm { width: 30px; height: 30px; flex-basis: 30px; font-size: 11px; }
 	.era-label { flex-direction: column; gap: 0; padding: 6px 16px; }
 	.alum-chip { position: relative; }
-	.alum-meta { position: absolute; top: 4px; right: 4px; padding: 0 5px; font-size: 10px; background: transparent; }
-	.alum-meta span { display: none; }
-	.alum-meta .fa-trophy ~ .fa-book-open { display: none; }
-	.alum-dialog {
+		.alum-dialog {
 		width: 100%;
 		max-width: none;
 		max-height: 88vh;

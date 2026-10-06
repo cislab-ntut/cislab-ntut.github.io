@@ -1,5 +1,5 @@
 /* ==========================================================
-   共用內容解析：成員、校友、論文、榮譽
+   共用內容解析：成員、歷屆成員、論文、榮譽
    首頁 index.html 與論文榮譽頁 achievements.html 都會載入（需在 core.js 之後）
    ========================================================== */
 (function () {
@@ -35,7 +35,7 @@
 		return sections;
 	}
 
-	/* ---------------- 人名資料（成員 + 校友） ---------------- */
+	/* ---------------- 人名資料（成員 + 歷屆成員） ---------------- */
 	var people = { zh2en: {}, labEn: [] };
 	function splitPerson(item) {
 		// 「張育丞 | Yu-Cheng Chang | image/x.jpg」或「楊喆凱 | Jhe-Kai Yang（說明）」
@@ -44,10 +44,7 @@
 		var p = item.split(/\s*\|\s*/);
 		return { zh: p[0], en: p[1] || '', photo: p[2] || '', note: note };
 	}
-	function splitWorks(v) {
-		return v.split(/\s*[,，;；、]\s*/).map(function (x) { return x.trim(); }).filter(Boolean);
-	}
-	// members.md / alumni.md：# 學校（時期分隔）→ ## 年份 → - 姓名 | English，下面可縮排寫「戰績: / 備註: / 現職:」
+	// members.md / alumni.md：# 學校（時期分隔）→ ## 年份 → - 姓名 | English，下面可縮排寫「論文: / 備註: / 現職:」
 	function parsePeople(text) {
 		text = text.replace(/\r\n?/g, '\n').replace(/<!--[\s\S]*?-->/g, '');
 		var eras = [], era = null, yr = null, person = null;
@@ -70,17 +67,17 @@
 			} else if (!/^\s/.test(raw) && (m = line.match(/^[-*]\s+(.+)$/))) {
 				ensure();
 				var sp = splitPerson(m[1]);
-				person = { zh: sp.zh, en: sp.en, aka: [], photo: sp.photo, works: [], note: '', now: '', web: '', email: '', coadvisor: '', year: yr.year, group: yr, era: era };
-				if (sp.note) { // 相容舊格式「姓名（北科，戰績：A, B）」
-					var w = sp.note.split(/戰績[:：]/);
-					if (w[1]) person.works = splitWorks(w[1]);
-					var n = w[0].replace(/[，,]\s*$/, '').replace(/^(北科|元智)\s*[-－—]?\s*/, '').trim();
+				person = { zh: sp.zh, en: sp.en, aka: [], photo: sp.photo, degree: '', thesis: '', thesisUrl: '', note: '', now: '', web: '', email: '', coadvisor: '', year: yr.year, group: yr, era: era };
+				if (sp.note) { // 相容舊格式「姓名（北科，說明）」
+					var n = sp.note.replace(/^(北科|元智)\s*[-－—，,]?\s*/, '').trim();
 					if (n) person.note = n;
 				}
 				yr.people.push(person);
 			} else if (person && (m = line.match(/^([^:：]{1,12})[:：]\s*(.*)$/))) {
 				var k = m[1].trim().toLowerCase(), v = m[2].trim();
-				if (k === '戰績' || k === 'works') person.works = splitWorks(v);
+				if (/^(學位|degree)$/.test(k)) person.degree = /博士|ph\.?d|doctor/i.test(v) ? 'phd' : 'ms';
+				else if (/^(論文|畢業論文|學位論文|thesis)$/.test(k)) person.thesis = v;
+				else if (/^(論文連結|論文網址|thesis_url|thesisurl)$/.test(k)) person.thesisUrl = v;
 				else if (k === '備註' || k === 'note') person.note = v;
 				else if (k === '現職' || k === 'now') person.now = v;
 				else if (k === '英文' || k === 'en') person.en = v;
@@ -100,7 +97,6 @@
 		});
 		return eras.filter(function (e) { return e.years.length; });
 	}
-	function isAward(w) { return /^\*\*/.test(w) || /獎|award|prize/i.test(w); }
 
 	function loadPeople() {
 		return Promise.all([
@@ -113,7 +109,17 @@
 			var groups = [];
 			r[0].forEach(function (e) { groups = groups.concat(e.years); });
 			r[0].forEach(function (e) { e.years.forEach(function (y) { y.people.forEach(function (p) { p.kind = 'member'; add(p); }); }); });
-			r[1].forEach(function (e) { e.years.forEach(function (y) { y.people.forEach(function (p) { p.kind = 'alumni'; add(p); }); }); });
+			// 歷屆成員：沒寫學位就是碩士；名字也在現任成員裡的，代表碩士畢業後繼續在實驗室讀博士
+			var current = {};
+			r[0].forEach(function (e) { e.years.forEach(function (y) { y.people.forEach(function (p) { current[p.zh] = p; }); }); });
+			r[1].forEach(function (e) { e.years.forEach(function (y) { y.people.forEach(function (p) {
+				p.kind = 'alumni';
+				if (!p.degree) p.degree = 'ms';
+				p.stillHere = p.degree === 'ms' && !!current[p.zh];
+				if (p.stillHere) current[p.zh].msYear = p.year;
+				if (!p.en && current[p.zh]) p.en = current[p.zh].en;
+				add(p);
+			}); }); });
 			return { members: groups, alumni: r[1] };
 		});
 	}
@@ -129,7 +135,6 @@
 	CIS.secName = secName;
 	CIS.people = people;
 	CIS.loadPeople = loadPeople;
-	CIS.isAward = isAward;
 	CIS.countPubs = countPubs;
 	CIS.countHonors = countHonors;
 })();
