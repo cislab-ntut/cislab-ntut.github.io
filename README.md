@@ -218,10 +218,6 @@ doi: 10.1109/xxxx
 - Node.js：`npx serve .`
 - Python：`python3 -m http.server 8000`，再瀏覽 http://localhost:8000
 
-## 更新後瀏覽器還顯示舊版？
-
-GitHub Pages 會讓瀏覽器快取檔案約 10 分鐘。三個 HTML 檔載入 CSS / JS 時都帶有版本號（例如 `js/core.js?v=20261007`），**改了 CSS 或 JS 之後，請把三個 HTML 裡的 `?v=` 一起改成新的日期**，訪客就會拿到新檔案，不會新舊混用而出錯。只改 `content/*.md` 不需要改版本號。
-
 ## 使用的外部資源（皆為 CDN，無需安裝）
 
 - [Font Awesome 6](https://fontawesome.com/)（圖示）
