@@ -110,7 +110,6 @@ place: 屏東 墾丁 // Kenting, Pingtung        ← 地點
 
 ```markdown
 ## 博班修煉中 | Ph.D. students, still in training
-- 張育丞 | Yu-Cheng Chang
 - 王小明 | Hsiao-Ming Wang | image/xiaoming.jpg   ← 第三欄可放照片
 ```
 
@@ -119,13 +118,16 @@ place: 屏東 墾丁 // Kenting, Pingtung        ← 地點
 姓名下方可以縮排（空兩格）補充個人資訊，點名字會打開彈窗：
 
 ```markdown
-- 張育丞 | Yu-Cheng Chang
-  網頁: https://yucheng208.net
+- 王忠明 | Zong-Ming Wang
+  網頁: https://example.com
+  GitHub: your-id              ← 選填，寫帳號或完整網址都可以
+  HackMD: @your-id             ← 選填，寫帳號或完整網址都可以
+  LinkedIn: your-id            ← 選填，寫帳號或完整網址都可以（也可以寫「領英:」）
   email: someone@example.com
-  共指: 國立清華大學 資訊工程學系 沈之涯 教授 // Prof. Chih-Ya Shen, Department of Computer Science, National Tsing Hua University
+  共指: 國立XX大學 資訊工程學系 王大明 教授 // Prof. Da-Ming, Department of Computer Science, National Doble X University
 ```
 
-沒填的網頁、Email 在彈窗中會顯示「尚未公開」；「共指」只有填了才會顯示，並在卡片上加上「共同指導」標籤。
+網頁、GitHub、HackMD、LinkedIn 會一起列在彈窗的「個人連結」，每個都是一顆附圖示的小按鈕；`網頁:` 也可以用逗號放多個網址，GitHub、HackMD、LinkedIn 的網址會自動認出來。都沒填就顯示「尚未公開」，Email 同理；「共指」只有填了才會顯示，並在卡片上加上「共同指導」標籤。
 
 **歷屆成員（畢業成員）** `content/alumni.md`
 
@@ -148,6 +150,7 @@ place: 屏東 墾丁 // Kenting, Pingtung        ← 地點
 
 - `# 學校` 會變成網頁上的學校分隔線，人數和年份範圍會自動計算。依學生畢業的學校放在對應的 `# 學校` 底下：2024 年起畢業的在北科，2023 年（含）以前在元智（老師在元智指導到 2023 年）。
 - `論文 / 論文連結 / 備註 / 現職` 都是選填，前面要空兩格。點名字會打開詳細資訊彈窗，有填論文的會顯示「畢業論文」，名牌右上角也會有一個小卷軸圖示。
+- **畢業論文目前先不顯示**（資料保留），要公開時把 `index.js` 最上方的 `SHOW_THESIS` 改成 `true`，並把搜尋框提示改回「搜尋姓名、論文題目…」。
 - 論文題目寫成 `中文 // English`，英文和日文網頁都會顯示英文題目（下方小字附中文原題），沒寫英文就顯示中文；論文連結建議用臺灣博碩士論文系統的永久網址（`https://hdl.handle.net/11296/...`）。
 - 英文名若出現在 `publications.md` 的作者裡，論文頁會把他標成實驗室成員（粗體）。
 - 學生畢業時，把他從 `members.md` 移到這裡即可。
@@ -185,6 +188,16 @@ doi: 10.1109/xxxx
 
 滑鼠移到（手機上點）老師的「老大」標籤，會顯示「博17學長」。數字每年 9 月自動加 1，基準設定在 `index.js` 的 `BOSS_PHD`（2026 年 9 月 = 17）。
 
+## 網頁上的照片
+
+手機拍的原檔通常 3–4MB，直接放上網頁會載入很久。放進 `image/` 之前請先縮小：長邊 800–1600px、每張幾百 KB 以內就夠了。Mac 可以用內建指令：
+
+```bash
+sips -Z 800 -s format jpeg -s formatOptions 72 原檔.jpg --out image/新檔.jpg
+```
+
+「實驗室一角」的三張照片已經縮到 800px（原本合計 7.6MB，現在約 0.44MB）。
+
 ## 實驗室 Logo
 
 | 檔案 | 用途 |
@@ -211,7 +224,23 @@ doi: 10.1109/xxxx
   - 日文都可以省略，省略時日文模式會顯示英文；英文也省略就顯示中文。
 - 人名在日文模式維持漢字（下方小字是英文名），英文模式才換成英文名。
 
-網址加上 `?lang=zh`、`?lang=en` 或 `?lang=ja` 可直接指定語言；第一次來訪時會依瀏覽器語言自動選擇。
+網址加上 `?lang=zh`、`?lang=en` 或 `?lang=ja` 可直接指定語言。
+
+語言選擇的規則：
+- 預設跟著系統（瀏覽器）語言自動配對：依序看偏好語言清單，中文 → TW、日文 → JP、英文 → EN，都沒有就用英文。
+- 訪客從右上角的下拉選單手動選了別的語言，會被記住；選回系統語言就清除紀錄，回到自動配對。
+- 沒有手動選過時，系統語言改變，網頁也會跟著切換。
+
+## 彩蛋（以下有解答）
+
+給打開開發者工具的訪客玩的小謎題：
+
+1. **主控台**：任何頁面按 F12 打開主控台，會看到「CIS LAB」字型畫和「哈哈哈被發現了 👀」，提示第一條線索在首頁原始碼裡（程式在 `js/core.js` 的 `consoleHello`）。
+2. **凱薩密碼**：`index.html` 開頭的 HTML 註解藏了一句密文，每個英文字母往回數 3 個就能解開，得到一串 Base64。
+3. **Base64**：解碼後是 `Go to /c1s-fl4g.html`。
+4. **終點**：`c1s-fl4g.html` 有旗子 `CISLAB{y0u_f0und_th3_k3y}` 和歡迎來信的訊息。這一頁設定了不讓搜尋引擎收錄。
+
+想換旗子或網址時，要一起改：`c1s-fl4g.html` 的旗子（兩處）、檔名，以及 `index.html` 註解裡的密文（先把 `Nice! Now decode this Base64: <新網址的 Base64>` 每個英文字母往後數 3 個再貼上）。
 
 ## 本機預覽
 

@@ -35,6 +35,30 @@
 		return sections;
 	}
 
+	/* ---------------- 個人連結：自己的網站、GitHub、HackMD、LinkedIn ----------------
+	   網頁: https://a.com, https://github.com/xxx   → 可以放多個，用逗號分隔，會自動判斷種類
+	   GitHub: your-id                              → 只寫帳號也可以
+	   HackMD: @your-id                             → 只寫帳號也可以
+	   LinkedIn: your-id（或「領英:」）              → 只寫帳號也可以 */
+	function linkKind(url) {
+		if (/(^|\.)github\.com\//i.test(url.replace(/^https?:\/\//, '') + '/')) return 'github';
+		if (/(^|\.)hackmd\.io\//i.test(url.replace(/^https?:\/\//, '') + '/')) return 'hackmd';
+		if (/(^|\.)linkedin\.com\//i.test(url.replace(/^https?:\/\//, '') + '/')) return 'linkedin';
+		return 'site';
+	}
+	function addLinks(person, value, kind) {
+		String(value).split(/[\s,，、]+/).filter(Boolean).forEach(function (v) {
+			var url;
+			if (/^https?:\/\//i.test(v) || /\.[a-z]{2,}(\/|$)/i.test(v)) url = /^https?:\/\//i.test(v) ? v : 'https://' + v;
+			else if (kind === 'github') url = 'https://github.com/' + v.replace(/^@/, '');
+			else if (kind === 'hackmd') url = 'https://hackmd.io/@' + v.replace(/^@/, '');
+			else if (kind === 'linkedin') url = 'https://www.linkedin.com/in/' + v.replace(/^@/, '');
+			else return;
+			if (person.links.some(function (l) { return l.url === url; })) return;
+			person.links.push({ kind: kind && linkKind(url) === 'site' ? kind : linkKind(url), url: url });
+		});
+	}
+
 	/* ---------------- 人名資料（成員 + 歷屆成員） ---------------- */
 	var people = { zh2en: {}, labEn: [] };
 	function splitPerson(item) {
@@ -67,7 +91,7 @@
 			} else if (!/^\s/.test(raw) && (m = line.match(/^[-*]\s+(.+)$/))) {
 				ensure();
 				var sp = splitPerson(m[1]);
-				person = { zh: sp.zh, en: sp.en, aka: [], photo: sp.photo, degree: '', thesis: '', thesisUrl: '', note: '', now: '', web: '', email: '', coadvisor: '', year: yr.year, group: yr, era: era };
+				person = { zh: sp.zh, en: sp.en, aka: [], photo: sp.photo, degree: '', thesis: '', thesisUrl: '', note: '', now: '', web: '', links: [], email: '', coadvisor: '', year: yr.year, group: yr, era: era };
 				if (sp.note) { // 相容舊格式「姓名（北科，說明）」
 					var n = sp.note.replace(/^(北科|元智)\s*[-－—，,]?\s*/, '').trim();
 					if (n) person.note = n;
@@ -83,7 +107,10 @@
 				else if (k === '英文' || k === 'en') person.en = v;
 				else if (k === '照片' || k === 'photo') person.photo = v;
 				else if (/^(別名|又名|aka|alias)$/.test(k)) person.aka = v.split(/\s*[,，;；、]\s*/).filter(Boolean);
-				else if (/^(個人網頁|網頁|網站|website|web|url)$/.test(k)) person.web = v;
+				else if (/^(個人網頁|網頁|網站|website|web|url)$/.test(k)) { addLinks(person, v, ''); if (!person.web) person.web = v.split(/[\s,，、]+/)[0]; }
+				else if (k === 'github') addLinks(person, v, 'github');
+				else if (k === 'hackmd') addLinks(person, v, 'hackmd');
+				else if (k === 'linkedin' || k === '領英') addLinks(person, v, 'linkedin');
 				else if (/^(email|e-mail|信箱|電子郵件)$/.test(k)) person.email = v;
 				else if (/^(共指|共同指導|主要指導|主要指導教授|coadvisor|co-advisor|advisor)$/.test(k)) person.coadvisor = v;
 			}

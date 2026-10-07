@@ -47,24 +47,72 @@
 			if (v != null) el.setAttribute('placeholder', v);
 		});
 		document.querySelectorAll('[data-set-lang]').forEach(function (b) {
-			b.setAttribute('aria-pressed', b.getAttribute('data-set-lang') === l ? 'true' : 'false');
+			b.setAttribute('aria-checked', b.getAttribute('data-set-lang') === l ? 'true' : 'false');
 		});
+		if ($('langCur')) $('langCur').textContent = LANG_CODES[l];
+	}
+
+	// 語言下拉選單：按鈕顯示目前的語言，點一下（或滑鼠移上去）往下展開
+	var LANG_CODES = { zh: 'TW', en: 'EN', ja: 'JP' };
+	function setLangOpen(open, focusItem) {
+		var menu = $('langMenu'), btn = $('langBtn');
+		if (!menu) return;
+		menu.classList.toggle('is-open', open);
+		btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+		if (open && focusItem) {
+			var cur = menu.querySelector('[aria-checked="true"]') || menu.querySelector('[data-set-lang]');
+			cur.focus();
+		}
 	}
 
 	// 語言切換：TW / EN / JP
 	var langHooks = [];
 	function onLang(fn) { langHooks.push(fn); }
 	document.addEventListener('click', function (e) {
+		if (e.target.closest('#langBtn')) { setLangOpen(!$('langMenu').classList.contains('is-open'), e.detail === 0); return; }
 		var b = e.target.closest('[data-set-lang]');
-		if (!b) return;
+		if (!b) { setLangOpen(false); return; }
 		var next = b.getAttribute('data-set-lang');
+		setLangOpen(false);
+		$('langBtn').focus();
 		if (next === lang() || !LANGS[next]) return;
+		// 選的剛好是系統語言就不記住，之後繼續自動配對；選別的語言才記住
+		if (window.CIS_SYS_LANG && next === window.CIS_SYS_LANG()) { try { localStorage.removeItem('lang'); } catch (err) {} }
+		else store('lang', next);
+		switchLang(next);
+	});
+	function switchLang(next) {
 		root.setAttribute('data-lang', next);
-		store('lang', next);
 		applyLang();
 		renderTicker();
 		langHooks.forEach(function (fn) { fn(); });
 		if (newsDlg && newsDlg.open && newsCurrent) openNews(newsCurrent);
+	}
+	// 沒有手動選過語言時，系統語言改變就跟著切換
+	window.addEventListener('languagechange', function () {
+		var saved = null;
+		try { saved = localStorage.getItem('lang'); } catch (err) {}
+		if (saved || new URLSearchParams(location.search).get('lang') || !window.CIS_SYS_LANG) return;
+		var sys = window.CIS_SYS_LANG();
+		if (sys !== lang()) switchLang(sys);
+	});
+
+	// 鍵盤：↓ 打開並移到目前語言，↑↓ 在選項間移動，Esc 關閉
+	document.addEventListener('keydown', function (e) {
+		var menu = $('langMenu');
+		if (!menu) return;
+		var open = menu.classList.contains('is-open');
+		if (e.key === 'Escape' && open) { setLangOpen(false); $('langBtn').focus(); return; }
+		if (e.target === $('langBtn') && e.key === 'ArrowDown') { e.preventDefault(); setLangOpen(true, true); return; }
+		if (!open || !menu.contains(e.target) || (e.key !== 'ArrowDown' && e.key !== 'ArrowUp')) return;
+		e.preventDefault();
+		var items = Array.prototype.slice.call(menu.querySelectorAll('[data-set-lang]'));
+		var i = items.indexOf(e.target), d = e.key === 'ArrowDown' ? 1 : -1;
+		items[(i + d + items.length) % items.length].focus();
+	});
+	document.addEventListener('focusin', function (e) {
+		var menu = $('langMenu');
+		if (menu && menu.classList.contains('is-open') && !menu.contains(e.target)) setLangOpen(false);
 	});
 
 	/* ---------------- 深淺色 ---------------- */
@@ -152,8 +200,9 @@
 	document.addEventListener('click', function (e) {
 		var b = e.target.closest('.copy-btn');
 		if (!b) return;
-		var mail = b.getAttribute('data-copy-user') + '@' + b.getAttribute('data-copy-domain');
-		var done = function () { toast(ui('copied') + '：' + mail); };
+		// data-copy-text：直接複製這段文字（例如彩蛋頁的旗子）；否則組成 Email
+		var mail = b.getAttribute('data-copy-text') || b.getAttribute('data-copy-user') + '@' + b.getAttribute('data-copy-domain');
+		var done = function () { toast(b.hasAttribute('data-copy-text') ? ui('copiedText') : ui('copied') + '：' + mail); };
 		if (navigator.clipboard && window.isSecureContext) {
 			navigator.clipboard.writeText(mail).then(done, function () { toast(ui('copyFail')); });
 		} else {
@@ -378,10 +427,31 @@
 			.catch(function (e) { console.warn(e); bar.hidden = true; });
 	}
 
+	/* ---------------- 彩蛋：打開開發者主控台的人會看到 ----------------
+	   線索鏈：主控台 → 首頁原始碼裡的 HTML 註解（凱薩密碼，位移 3）→ Base64 → c1s-fl4g.html */
+	function consoleHello() {
+		if (!window.console || !console.log) return;
+		var art = [
+			'  ____ ___ ____    _        _    ____  ',
+			' / ___|_ _/ ___|  | |      / \\  | __ ) ',
+			'| |    | |\\___ \\  | |     / _ \\ |  _ \\ ',
+			'| |___ | | ___) | | |___ / ___ \\| |_) |',
+			' \\____|___|____/  |_____/_/   \\_\\____/ '
+		].join('\n');
+		var atFlag = document.body.classList.contains('page-flag');
+		console.log('%c' + art, 'color:#ed6ea0;font-weight:bold;font-family:monospace;line-height:1.15');
+		console.log('%c哈哈哈被發現了 👀', 'font-size:20px;font-weight:bold;color:#ec8c69');
+		console.log('%c' + (atFlag
+			? '你已經走到終點了，恭喜 🎉\nYou made it to the end. Congrats!'
+			: '既然都打開開發者工具了，來解個小謎題吧 🧩\n第一條線索藏在首頁的原始碼裡，找找看 HTML 註解。\n\nYou found us! The first clue is hidden in the homepage source. Look for an HTML comment.'),
+			'font-size:13px;line-height:1.7');
+	}
+
 	/* ---------------- 啟動 ---------------- */
 	applyLang();
 	applyThemeIcon();
 	renderTicker();
+	consoleHello();
 	window.addEventListener('load', openNewsFromHash);
 
 	window.CIS = {

@@ -18,16 +18,24 @@
 	<script>
 		(function () {
 			var root = document.documentElement, theme = null, lang = null;
-			try { theme = localStorage.getItem('theme'); lang = localStorage.getItem('lang'); } catch (e) {}
+			// 系統語言自動配對：依序看瀏覽器的偏好語言清單，中文 → TW、日文 → JP、英文 → EN，都沒有就用英文
+			window.CIS_SYS_LANG = function () {
+				var list = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+				for (var i = 0; i < list.length; i++) {
+					var l = String(list[i]).toLowerCase();
+					if (l.indexOf('zh') === 0) return 'zh';
+					if (l.indexOf('ja') === 0) return 'ja';
+					if (l.indexOf('en') === 0) return 'en';
+				}
+				return 'en';
+			};
+			try { theme = localStorage.getItem('theme'); lang = localStorage.getItem('lang'); } catch (e) {}   // lang 只在訪客手動切換時才會存
 			var q = new URLSearchParams(location.search).get('lang');
 			if (q === 'jp') q = 'ja';
 			if (q === 'en' || q === 'zh' || q === 'ja') lang = q;
-			if (lang !== 'en' && lang !== 'ja') lang = lang === 'zh' ? 'zh' : null;
+			if (lang !== 'en' && lang !== 'ja' && lang !== 'zh') lang = null;
 			if (!theme) theme = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-			if (!lang) {
-				var nl = (navigator.language || '').toLowerCase();
-				lang = nl.indexOf('zh') === 0 ? 'zh' : nl.indexOf('ja') === 0 ? 'ja' : 'en';
-			}
+			if (!lang) lang = window.CIS_SYS_LANG();
 			root.setAttribute('data-theme', theme);
 			root.setAttribute('data-lang', lang);
 			root.lang = { zh: 'zh-Hant-TW', en: 'en', ja: 'ja' }[lang];
@@ -37,9 +45,17 @@
 
 	<!-- Font Awesome (https://fontawesome.com/) -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
-	<link rel="stylesheet" href="index.css?v=20261007v">
+	<link rel="stylesheet" href="index.css?v=20261008e">
 </head>
 <body>
+	<!--
+		🔐 哈哈，被你翻到原始碼了！這是 CIS Lab 的第一條線索。
+		凱薩大帝把下面這句話藏起來了，他把每個英文字母都往後數了 3 個：
+
+		    Qlfh! Qrz ghfrgh wklv Edvh64: U28jgJ8jO2Pafb1peGUqOpk0eZz=
+
+		（Psst... it's a Caesar cipher with a shift of 3. Good luck!）
+	-->
 	<!-- Logo 圖形（全站共用） -->
 	<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="cis-mark" viewBox="70 38 302 288"><g fill="none"><line x1="271" y1="50.5" x2="129.5" y2="70"/><line x1="129.5" y1="70" x2="351" y2="115.5"/><line x1="129.5" y1="70" x2="171" y2="103.5"/><line x1="171" y1="103.5" x2="202.5" y2="134.5"/><line x1="129.5" y1="70" x2="172" y2="213"/><line x1="129.5" y1="70" x2="83.5" y2="184"/><line x1="271" y1="50.5" x2="253.5" y2="125"/><line x1="271" y1="50.5" x2="351" y2="115.5"/><line x1="271" y1="50.5" x2="171" y2="103.5"/><line x1="171" y1="103.5" x2="83.5" y2="184"/><line x1="253.5" y1="125" x2="202.5" y2="134.5"/><line x1="351" y1="115.5" x2="253.5" y2="125"/><line x1="253.5" y1="125" x2="172" y2="213"/><line x1="202.5" y1="134.5" x2="172" y2="213"/><line x1="83.5" y1="184" x2="172" y2="213"/><line x1="83.5" y1="184" x2="146" y2="281"/><line x1="172" y1="213" x2="331" y2="272"/><line x1="172" y1="213" x2="248" y2="313"/><line x1="146" y1="281" x2="248" y2="313"/><line x1="248" y1="313" x2="331" y2="272"/><g stroke-dasharray="4 3"><line x1="129.5" y1="70" x2="140" y2="272"/><line x1="152" y1="274" x2="331" y2="272"/></g></g><g stroke="none"><rect x="265" y="45" width="12" height="11" rx="1"/><rect x="123" y="64" width="13" height="12" rx="1"/><rect x="166" y="98" width="10" height="11" rx="1"/><rect x="343" y="107" width="16" height="17" rx="1"/><rect x="243" y="113" width="21" height="24" rx="1"/><rect x="196" y="129" width="13" height="11" rx="1"/><rect x="76" y="175" width="15" height="18" rx="1"/><rect x="166" y="207" width="12" height="12" rx="1"/><rect x="138" y="271" width="16" height="20" rx="1"/><rect x="242" y="307" width="12" height="12" rx="1"/><path style="fill:var(--lock,currentColor)" fill-rule="evenodd" d="M330 261h34v32h-34z M344.3 287V276.2A5.5 5.5 0 1 1 347.7 276.2V287z"/></g></symbol><symbol id="cis-mark-bold" viewBox="70 38 302 288"><g fill="none" stroke-linecap="round"><line x1="271" y1="50.5" x2="129.5" y2="70"/><line x1="129.5" y1="70" x2="351" y2="115.5"/><line x1="129.5" y1="70" x2="171" y2="103.5"/><line x1="171" y1="103.5" x2="202.5" y2="134.5"/><line x1="129.5" y1="70" x2="172" y2="213"/><line x1="129.5" y1="70" x2="83.5" y2="184"/><line x1="271" y1="50.5" x2="253.5" y2="125"/><line x1="271" y1="50.5" x2="351" y2="115.5"/><line x1="271" y1="50.5" x2="171" y2="103.5"/><line x1="171" y1="103.5" x2="83.5" y2="184"/><line x1="253.5" y1="125" x2="202.5" y2="134.5"/><line x1="351" y1="115.5" x2="253.5" y2="125"/><line x1="253.5" y1="125" x2="172" y2="213"/><line x1="202.5" y1="134.5" x2="172" y2="213"/><line x1="83.5" y1="184" x2="172" y2="213"/><line x1="83.5" y1="184" x2="146" y2="281"/><line x1="172" y1="213" x2="331" y2="272"/><line x1="172" y1="213" x2="248" y2="313"/><line x1="146" y1="281" x2="248" y2="313"/><line x1="248" y1="313" x2="331" y2="272"/><line x1="129.5" y1="70" x2="140" y2="272"/><line x1="152" y1="274" x2="331" y2="272"/></g><g stroke="none"><rect x="259.6" y="40.05" width="22.8" height="20.9" rx="1"/><rect x="117.15" y="58.6" width="24.7" height="22.8" rx="1"/><rect x="161.5" y="93.05" width="19" height="20.9" rx="1"/><rect x="335.8" y="99.35" width="30.4" height="32.3" rx="1"/><rect x="233.55" y="102.2" width="39.9" height="45.6" rx="1"/><rect x="190.15" y="124.05" width="24.7" height="20.9" rx="1"/><rect x="69.25" y="166.9" width="28.5" height="34.2" rx="1"/><rect x="160.6" y="201.6" width="22.8" height="22.8" rx="1"/><rect x="130.8" y="262" width="30.4" height="38" rx="1"/><rect x="236.6" y="301.6" width="22.8" height="22.8" rx="1"/><g transform="translate(347 277) scale(1.3) translate(-347 -277)"><path style="fill:var(--lock,currentColor)" fill-rule="evenodd" d="M330 261h34v32h-34z M344.3 287V276.2A5.5 5.5 0 1 1 347.7 276.2V287z"/></g></g></symbol></svg>
 
@@ -72,11 +88,15 @@
 			</ul>
 
 			<div class="nav-tools">
-				<div class="lang-seg" role="group" data-i18n-aria="tool.lang" aria-label="語言">
-					<i class="fa-solid fa-language" aria-hidden="true"></i>
-					<button type="button" data-set-lang="zh" lang="zh-Hant-TW" aria-pressed="true" title="繁體中文">TW</button>
-					<button type="button" data-set-lang="en" lang="en" aria-pressed="false" title="English">EN</button>
-					<button type="button" data-set-lang="ja" lang="ja" aria-pressed="false" title="日本語">JP</button>
+				<div class="lang-menu" id="langMenu">
+					<button type="button" class="tool-btn lang-btn" id="langBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="langList" data-i18n-aria="tool.lang" aria-label="語言">
+						<i class="fa-solid fa-language" aria-hidden="true"></i><span class="lang-cur" id="langCur">TW</span><i class="fa-solid fa-chevron-down lang-caret" aria-hidden="true"></i>
+					</button>
+					<ul class="lang-list" id="langList" role="menu">
+						<li role="none"><button type="button" role="menuitemradio" data-set-lang="zh" lang="zh-Hant-TW" aria-checked="true"><b>TW</b><span>繁體中文</span></button></li>
+						<li role="none"><button type="button" role="menuitemradio" data-set-lang="en" lang="en" aria-checked="false"><b>EN</b><span>English</span></button></li>
+						<li role="none"><button type="button" role="menuitemradio" data-set-lang="ja" lang="ja" aria-checked="false"><b>JP</b><span>日本語</span></button></li>
+					</ul>
 				</div>
 				<button type="button" id="themeToggle" class="tool-btn" data-i18n-aria="tool.theme" aria-label="切換深淺色模式">
 					<i class="fa-solid fa-moon"></i>
@@ -144,15 +164,15 @@
 					<h2><i class="fa-solid fa-mug-hot"></i> <span data-i18n="corner.title">實驗室一角</span></h2>
 					<div class="gallery">
 						<figure>
-							<img src="image/coffee_machine.jpg" alt="" width="300" height="360" loading="lazy">
+							<img src="image/coffee_machine.jpg" alt="" width="600" height="800" loading="lazy" decoding="async">
 							<figcaption data-i18n="corner.c1">全自動咖啡機</figcaption>
 						</figure>
 						<figure>
-							<img src="image/coffee_beans.jpg" alt="" width="300" height="360" loading="lazy">
+							<img src="image/coffee_beans.jpg" alt="" width="600" height="800" loading="lazy" decoding="async">
 							<figcaption data-i18n="corner.c2">眾多選擇的咖啡豆</figcaption>
 						</figure>
 						<figure>
-							<img src="image/foods.jpg" alt="" width="300" height="360" loading="lazy">
+							<img src="image/foods.jpg" alt="" width="600" height="800" loading="lazy" decoding="async">
 							<figcaption data-i18n="corner.c3">數之不盡的零食</figcaption>
 						</figure>
 					</div>
@@ -188,7 +208,7 @@
 				<div class="band-head">
 					<h1 data-i18n="members.title">實驗室成員</h1>
 					<div class="seg" role="tablist" data-i18n-aria="members.tabs" aria-label="成員分類">
-						<button type="button" role="tab" id="tab-current" aria-controls="panel-current" aria-selected="true"><i class="fa-solid fa-users"></i> <span data-i18n="members.tabCurrent">現任成員</span></button>
+						<button type="button" role="tab" id="tab-current" aria-controls="panel-current" aria-selected="true"><i class="fa-solid fa-users"></i> <span data-i18n="members.tabCurrent">現任成員</span><span class="tab-count" id="membersCount"></span></button>
 						<button type="button" role="tab" id="tab-alumni" aria-controls="Alumni" aria-selected="false" tabindex="-1"><i class="fa-solid fa-graduation-cap"></i> <span data-i18n="members.tabAlumni">歷屆成員</span><span class="tab-count" id="alumniCount"></span></button>
 					</div>
 				</div>
@@ -199,7 +219,7 @@
 						<div class="boss-info">
 							<button type="button" class="boss-role" id="bossTag" aria-describedby="bossTip"><span data-i18n="members.boss">老大</span><span class="boss-tip" id="bossTip" role="tooltip"></span></button>
 							<h2>Yu-Chi Chen 陳昱圻</h2>
-							<p class="pbold boss-quote"><span class="quote-glow" data-i18n="boss.quote">「我的課很操，身心俱疲的那種，但我都不太當(ㄉㄤˋ)人」</span></p>
+							<p class="pbold boss-quote"><span class="quote-glow" data-i18n="boss.quote">我的課很操，身心俱疲的那種，但我都不太當(ㄉㄤˋ)人 ૮₍ ˃̵ᴗ˂̵₎ა</span></p>
 							<ul class="boss-meta">
 								<li><i class="fa-solid fa-building-columns"></i><span data-i18n="boss.dept">國立臺北科技大學 資訊工程系 教授</span></li>
 								<li><i class="fa-solid fa-flask"></i><span data-i18n="boss.field">密碼學、資訊安全、隱私強化技術</span></li>
@@ -223,11 +243,11 @@
 
 				<!-- 歷屆成員（畢業成員）：內容由 content/alumni.md 管理 -->
 				<div class="tab-panel" id="Alumni" role="tabpanel" aria-labelledby="tab-alumni" hidden>
-					<p class="band-desc" data-i18n="alumni.intro">從實驗室畢業的學長姐們，名字旁標示碩士或博士。點名字可以看他們的畢業論文與近況。</p>
+					<p class="band-desc" data-i18n="alumni.intro">從實驗室畢業的學長姐們，名字旁標示碩士或博士。點名字可以看他們的近況。</p>
 					<div class="alumni-tools">
 						<label class="search-box">
 							<i class="fa-solid fa-magnifying-glass"></i>
-							<input type="search" id="alumniSearch" data-i18n-ph="alumni.search" placeholder="搜尋姓名、論文題目…" autocomplete="off">
+							<input type="search" id="alumniSearch" data-i18n-ph="alumni.search" placeholder="搜尋姓名…" autocomplete="off">
 						</label>
 						<div class="year-range">
 							<i class="fa-regular fa-calendar"></i>
@@ -401,11 +421,11 @@
 	<!-- Markdown 解析與安全過濾 -->
 	<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
-	<script src="js/i18n.js?v=20261007v"></script>
-	<script src="js/sparkle.js?v=20261007v"></script>
-	<script src="js/core.js?v=20261007v"></script>
-	<script src="js/content.js?v=20261007v"></script>
-	<script src="js/gallery.js?v=20261007v"></script>
-	<script src="index.js?v=20261007v"></script>
+	<script src="js/i18n.js?v=20261008e"></script>
+	<script src="js/sparkle.js?v=20261008e"></script>
+	<script src="js/core.js?v=20261008e"></script>
+	<script src="js/content.js?v=20261008e"></script>
+	<script src="js/gallery.js?v=20261008e"></script>
+	<script src="index.js?v=20261008e"></script>
 </body>
 </html>

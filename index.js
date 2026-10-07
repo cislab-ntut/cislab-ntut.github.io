@@ -10,6 +10,7 @@
 		bi = CIS.bi, getText = CIS.getText, failMsg = CIS.failMsg;
 
 	var LIMIT = { news: 5, alumniYears: 3 };   // 首頁最新消息最多 5 則；校友預設顯示最近 3 屆
+	var SHOW_THESIS = false;   // 畢業論文先不公開：資料保留在 content/alumni.md，改成 true 就會在彈窗顯示、也能搜尋
 	var expanded = { alumni: false };
 
 	/* ---------------- Preloader ---------------- */
@@ -85,6 +86,8 @@
 	function drawMembers(groups) {
 		var box = $('membersList'), en = lang() === 'en';   // 只有英文模式用英文名當主名，日文模式顯示漢字
 		memberShown = [];
+		// 分頁上的人數：members.md 裡所有人（老師不在名單裡，所以不算）
+		$('membersCount').textContent = groups.reduce(function (n, g) { return n + g.people.length; }, 0) || '';
 		box.innerHTML = groups.map(function (g, gi) {
 			var grad = GROUP_GRADIENTS[gi % GROUP_GRADIENTS.length];
 			return '<div class="member-group"><h2>' + esc(CIS.secName(g)) + '<span class="count">' + ui('people')(g.people.length) + '</span></h2>' +
@@ -143,7 +146,7 @@
 
 	function personMatch(p, q) {
 		if (!q) return true;
-		var hay = [p.zh, p.en, p.note, p.now, p.thesis].join(' ').toLowerCase();   // 中英文題目都能搜尋
+		var hay = [p.zh, p.en, p.note, p.now, SHOW_THESIS ? p.thesis : ''].join(' ').toLowerCase();   // 開啟論文時，中英文題目都能搜尋
 		return hay.indexOf(q) >= 0;
 	}
 
@@ -277,11 +280,19 @@
 	function infoRow(icon, label, valueHtml) {
 		return '<div class="info-row"><dt><i class="fa-solid ' + icon + '"></i>' + label + '</dt><dd>' + (valueHtml || notPublic()) + '</dd></div>';
 	}
-	function webHtml(url) {
-		if (!url) return '';
-		var href = /^https?:\/\//.test(url) ? url : 'https://' + url;
-		var text = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
-		return '<a href="' + esc(href) + '" target="_blank" rel="noopener">' + esc(text) + ' <i class="fa-solid fa-arrow-up-right-from-square"></i></a>';
+	// 個人連結：自己的網站、GitHub、HackMD、LinkedIn 各一顆附圖示的小按鈕
+	function linksHtml(links) {
+		if (!links || !links.length) return '';
+		return '<span class="link-chips">' + links.map(function (l) {
+			var path = l.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+			var user = path.split('/')[1] || '', icon, text;
+			if (l.kind === 'github') { icon = 'fa-brands fa-github'; text = 'GitHub' + (user ? ' · ' + user : ''); }
+			else if (l.kind === 'hackmd') { icon = 'fa-solid fa-file-pen'; text = 'HackMD' + (user ? ' · ' + user : ''); }
+			else if (l.kind === 'linkedin') { user = /^in$|^company$/.test(user) ? path.split('/')[2] || '' : user; icon = 'fa-brands fa-linkedin'; text = 'LinkedIn' + (user ? ' · ' + user : ''); }
+			else { icon = 'fa-solid fa-globe'; text = path; }
+			return '<a class="link-chip link-chip--' + l.kind + '" href="' + esc(l.url) + '" target="_blank" rel="noopener">' +
+				'<i class="' + icon + '" aria-hidden="true"></i><span>' + esc(text) + '</span></a>';
+		}).join('') + '</span>';
 	}
 	function emailHtml(mail) {
 		var m = String(mail || '').trim().replace(/\s+(at|AT)\s+/, '@').match(/^([^@\s]+)@([^@\s]+)$/);
@@ -324,13 +335,13 @@
 
 		h += '<dl class="info-list">' +
 			(isAlum ? infoRow('fa-briefcase', ui('now'), p.now ? mdInline(bi(p.now)) : '') : '') +
-			infoRow('fa-globe', ui('website'), webHtml(p.web)) +
+			infoRow('fa-link', ui('website'), linksHtml(p.links)) +
 			infoRow('fa-envelope', 'Email', emailHtml(p.email)) +
 			(p.note ? infoRow('fa-circle-info', ui('note'), mdInline(bi(p.note))) : '') +
 			'</dl>';
 
 		// 畢業論文：題目可寫「中文 // English // 日本語」，有連結就可以點
-		if (p.thesis) {
+		if (SHOW_THESIS && p.thesis) {
 			// 英文、日文頁面都顯示英文題目（沒有英文題目時才顯示中文），下方小字附上中文原題
 			var tp = String(p.thesis).split(/\s+\/\/\s+/), zhMode = CIS.lang() === 'zh';
 			var shown = zhMode ? tp[0] : (tp[1] || tp[0]);

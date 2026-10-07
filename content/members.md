@@ -3,12 +3,15 @@
 格式：
   ## 中文組別 | English group name | 日本語（選填）
   - 中文姓名 | English Name | image/照片.jpg   → 英文名與照片都可省略
-    網頁: https://...                         → 選填，以下各行前面空兩格
+    網頁: https://...                         → 選填，以下各行前面空兩格；可放多個網址，用逗號分隔
+    GitHub: 帳號或網址                         → 選填，例如 your-id 或 https://github.com/your-id
+    HackMD: 帳號或網址                         → 選填，例如 @your-id 或 https://hackmd.io/@your-id
+    LinkedIn: 帳號或網址                       → 選填，例如 your-id 或 https://www.linkedin.com/in/your-id（也可以寫「領英:」）
     email: name@example.com                   → 選填
     共指: 中文說明 // English                  → 選填，與他校共同指導時填寫主要指導教授
     別名: Other Spelling                        → 選填，論文上用過的其他英文拼法
 
-點名字會打開個人資訊彈窗；沒填的網頁、Email 會顯示「尚未公開」，沒填共指就不顯示。
+點名字會打開個人資訊彈窗；網頁、GitHub、HackMD、LinkedIn 會一起列在「個人連結」，都沒填就顯示「尚未公開」。Email 沒填也顯示「尚未公開」，沒填共指就不顯示。
 英文名也會用來在「論文發表」中自動標示實驗室成員。
 -->
 
@@ -20,7 +23,6 @@
 - 陳宣宇 | Xuan-Yu Chen
 - 何柏翰 | Po-Han Ho
 - 張育丞 | Yu-Cheng Chang
-  網頁: https://yucheng208.net
   共指: 國立清華大學 資訊工程學系 沈之涯 教授 // Prof. Chih-Ya Shen, Department of Computer Science, National Tsing Hua University
 
 ## 老鳥拼命中（碩二含以上） | Veterans going all out (M.S. year 2+) | ベテラン奮闘中（修士2年以上）
@@ -41,5 +43,5 @@
 - 馬永霖 | Yung-Lin Ma
 
 ## AIS3 助理 | AIS3 assistants | AIS3 アシスタント
-- 陳盈億
-- 張凱傑
+- 陳盈億 | Ying-Yi Chen
+- 張凱傑 | Kai-Chieh Chang
