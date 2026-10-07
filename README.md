@@ -123,11 +123,12 @@ place: 屏東 墾丁 // Kenting, Pingtung        ← 地點
   GitHub: your-id              ← 選填，寫帳號或完整網址都可以
   HackMD: @your-id             ← 選填，寫帳號或完整網址都可以
   LinkedIn: your-id            ← 選填，寫帳號或完整網址都可以（也可以寫「領英:」）
+  ORCID: 0000-0000-0000-0000   ← 選填，16 碼或完整網址都可以
   email: someone@example.com
   共指: 國立XX大學 資訊工程學系 王大明 教授 // Prof. Da-Ming, Department of Computer Science, National Doble X University
 ```
 
-網頁、GitHub、HackMD、LinkedIn 會一起列在彈窗的「個人連結」，每個都是一顆附圖示的小按鈕；`網頁:` 也可以用逗號放多個網址，GitHub、HackMD、LinkedIn 的網址會自動認出來。都沒填就顯示「尚未公開」，Email 同理；「共指」只有填了才會顯示，並在卡片上加上「共同指導」標籤。
+網頁、GitHub、HackMD、LinkedIn、ORCID 會一起列在彈窗的「個人連結」，每個都是一顆附圖示的小按鈕；`網頁:` 也可以用逗號放多個網址，GitHub、HackMD、LinkedIn、ORCID 的網址會自動認出來。都沒填就顯示「尚未公開」，Email 同理；「共指」只有填了才會顯示，並在卡片上加上「共同指導」標籤。
 
 **歷屆成員（畢業成員）** `content/alumni.md`
 

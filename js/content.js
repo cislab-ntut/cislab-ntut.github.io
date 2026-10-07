@@ -35,15 +35,17 @@
 		return sections;
 	}
 
-	/* ---------------- 個人連結：自己的網站、GitHub、HackMD、LinkedIn ----------------
+	/* ---------------- 個人連結：自己的網站、GitHub、HackMD、LinkedIn、ORCID ----------------
 	   網頁: https://a.com, https://github.com/xxx   → 可以放多個，用逗號分隔，會自動判斷種類
 	   GitHub: your-id                              → 只寫帳號也可以
 	   HackMD: @your-id                             → 只寫帳號也可以
-	   LinkedIn: your-id（或「領英:」）              → 只寫帳號也可以 */
+	   LinkedIn: your-id（或「領英:」）              → 只寫帳號也可以
+	   ORCID: 0000-0000-0000-0000                   → 只寫 16 碼也可以 */
 	function linkKind(url) {
 		if (/(^|\.)github\.com\//i.test(url.replace(/^https?:\/\//, '') + '/')) return 'github';
 		if (/(^|\.)hackmd\.io\//i.test(url.replace(/^https?:\/\//, '') + '/')) return 'hackmd';
 		if (/(^|\.)linkedin\.com\//i.test(url.replace(/^https?:\/\//, '') + '/')) return 'linkedin';
+		if (/(^|\.)orcid\.org\//i.test(url.replace(/^https?:\/\//, '') + '/')) return 'orcid';
 		return 'site';
 	}
 	function addLinks(person, value, kind) {
@@ -53,6 +55,7 @@
 			else if (kind === 'github') url = 'https://github.com/' + v.replace(/^@/, '');
 			else if (kind === 'hackmd') url = 'https://hackmd.io/@' + v.replace(/^@/, '');
 			else if (kind === 'linkedin') url = 'https://www.linkedin.com/in/' + v.replace(/^@/, '');
+			else if (kind === 'orcid' && /^\d{4}-\d{4}-\d{4}-\d{3}[\dX]$/i.test(v)) url = 'https://orcid.org/' + v.toUpperCase();
 			else return;
 			if (person.links.some(function (l) { return l.url === url; })) return;
 			person.links.push({ kind: kind && linkKind(url) === 'site' ? kind : linkKind(url), url: url });
@@ -111,6 +114,7 @@
 				else if (k === 'github') addLinks(person, v, 'github');
 				else if (k === 'hackmd') addLinks(person, v, 'hackmd');
 				else if (k === 'linkedin' || k === '領英') addLinks(person, v, 'linkedin');
+				else if (k === 'orcid') addLinks(person, v, 'orcid');
 				else if (/^(email|e-mail|信箱|電子郵件)$/.test(k)) person.email = v;
 				else if (/^(共指|共同指導|主要指導|主要指導教授|coadvisor|co-advisor|advisor)$/.test(k)) person.coadvisor = v;
 			}

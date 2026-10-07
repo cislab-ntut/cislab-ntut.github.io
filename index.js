@@ -280,7 +280,7 @@
 	function infoRow(icon, label, valueHtml) {
 		return '<div class="info-row"><dt><i class="fa-solid ' + icon + '"></i>' + label + '</dt><dd>' + (valueHtml || notPublic()) + '</dd></div>';
 	}
-	// 個人連結：自己的網站、GitHub、HackMD、LinkedIn 各一顆附圖示的小按鈕
+	// 個人連結：自己的網站、GitHub、HackMD、LinkedIn、ORCID 各一顆附圖示的小按鈕
 	function linksHtml(links) {
 		if (!links || !links.length) return '';
 		return '<span class="link-chips">' + links.map(function (l) {
@@ -288,6 +288,7 @@
 			var user = path.split('/')[1] || '', icon, text;
 			if (l.kind === 'github') { icon = 'fa-brands fa-github'; text = 'GitHub' + (user ? ' · ' + user : ''); }
 			else if (l.kind === 'hackmd') { icon = 'fa-solid fa-file-pen'; text = 'HackMD' + (user ? ' · ' + user : ''); }
+			else if (l.kind === 'orcid') { icon = 'fa-brands fa-orcid'; text = 'ORCID' + (user ? ' · ' + user : ''); }
 			else if (l.kind === 'linkedin') { user = /^in$|^company$/.test(user) ? path.split('/')[2] || '' : user; icon = 'fa-brands fa-linkedin'; text = 'LinkedIn' + (user ? ' · ' + user : ''); }
 			else { icon = 'fa-solid fa-globe'; text = path; }
 			return '<a class="link-chip link-chip--' + l.kind + '" href="' + esc(l.url) + '" target="_blank" rel="noopener">' +

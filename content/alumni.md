@@ -16,6 +16,7 @@
     GitHub: 帳號或網址                     → 選填
     HackMD: 帳號或網址                     → 選填
     LinkedIn: 帳號或網址                   → 選填（也可以寫「領英:」）
+    ORCID: 0000-0000-0000-0000            → 選填，16 碼或完整網址都可以
     email: name@example.com              → 選填
     別名: Song-Yi Hsu                     → 選填，論文上用過的其他英文拼法（逗號分隔），一樣會被標示成實驗室成員
 
@@ -32,27 +33,34 @@
 
 ## 2026
 - 張君瑋 | Chung-Wei Chang
+  ORCID: 0009-0005-2929-7412
   論文: 基於全同態加密之多資料源高效隱私保護近鄰分類 // Efficient Privacy-Preserving k-Nearest Neighbor from Multiple Data Sources via Fully Homomorphic Encryption
   論文連結: https://hdl.handle.net/11296/ac99u9
 - 林子豪 | Tzu-Hao Lin
   論文: 基於隨機帶狀秘密分享的多方私密集合交集 // A Multi-Party Private Set Intersection Based on Random Band Secret Sharing
   論文連結: https://hdl.handle.net/11296/75q524
 - 陳奕儒 | Yi-Ru Chen
+  ORCID: 0009-0006-4627-6098
   論文: 融合聯邦式學習之 ROS 2 多機器人風險評估架構 // A Federated Learning-Based Risk Assessment Framework for ROS 2 Multi-Robot Systems
   論文連結: https://hdl.handle.net/11296/t3gh73
 - 陳宣宇 | Xuan-Yu Chen
+  ORCID: 0009-0005-7389-7853
   論文: 基於全同態加密之衛星影像壓縮模型隱私保護機制 // Model-Privacy Preserving Satellite Image Compression by Using Fully Homomorphic Encryption
   論文連結: https://hdl.handle.net/11296/4f4g5u
 - 何柏翰 | Po-Han Ho
+  ORCID: 0009-0000-5054-2922
   論文: 利用隱私集合交集之高效轉換機制建構負載隱私集合交集 // An Efficient Transformation from Private Set Intersection to Private Set Intersection with Payload
   論文連結: https://hdl.handle.net/11296/672uus
 - 施凱喆 | Kai-Che Shih
+  ORCID: 0009-0009-7982-9973
   論文: 論標準零知識電路實作下非線性運算正規化瓶頸 // Circuit Normalization Bottlenecks in Trivial Zero-Knowledge Decision Tree Evaluation
   論文連結: https://hdl.handle.net/11296/v54zg3
 - 梁羽承 | Yu-Cheng Liang
+  ORCID: 0009-0006-2872-5339
   論文: 用於確保發行訂閱通訊安全性的隱蔽 SROS 2 框架 // An Oblivious SROS 2 Framework for Securing Publish-Subscribe Communication
   論文連結: https://hdl.handle.net/11296/625sc7
 - 李維珈 | Wei-Chia Lee
+  ORCID: 0009-0002-0742-3033
   論文: 基於混淆布隆過濾器的無密文膨脹偽底加密 // Ciphertext-size preserving False-Bottom Encryption from Garbled Bloom Filters
   論文連結: https://hdl.handle.net/11296/yhn26m
 - 李宜鴻 | Yi-Hong Li
@@ -60,46 +68,59 @@
   論文連結: https://hdl.handle.net/11296/37m4j6
   共指: 國立臺北科技大學 資訊工程系 孫勤昱 教授 // Prof. Chin-Yu Sun, Department of Computer Science and Information Engineering, National Taipei University of Technology
 - 吳仲霖 | Chung-Lin Wu
+  ORCID: 0009-0006-7392-1603
   論文: 基於雙流指標學習之高噪音工業物聯網聲學異常檢測和深度偽造防護 // Acoustic Anomaly Detection and Deepfake-Defense Evaluation Based on Dual-Stream Metric Learning in High-Noise Industrial IoT Environments
   論文連結: https://hdl.handle.net/11296/7373kz
 
 ## 2025
 - 謝宗辰 | Tsung-Chen Hsieh
+  ORCID: 0009-0007-1546-9329
   論文: 屬性隱藏方案之基於秘密分享的隱私保護授權決策樹分類 // On the Attribute Hiding Security of Privacy Preserving Secret-Sharing-Based Outsourced Decision Tree Classification
   論文連結: https://hdl.handle.net/11296/44ntzg
 - 洪章景 | Chang-Ching Hung
+  ORCID: 0009-0006-2889-0625
   論文: 利用安全內積技術提升分散式架構下保有隱私決策樹推論之效率與安全性 // Leveraging Secure Dot Products on Improving Efficiency and Security of Privacy-Preserving Decision Tree Classification with Distributed Service Providers
   論文連結: https://hdl.handle.net/11296/x7g2jw
 - 張國洋 | Kuo-Yang Chang
+  ORCID: 0009-0002-5150-7920
   論文: 基於隱私保護集合交集建構通用隱私資料清理架構 // Generic Construction of Private Data Cleaning from Private Set Intersection
   論文連結: https://hdl.handle.net/11296/jdr48r
 - 黃志翔 | Jhih-Siang Huang
+  ORCID: 0009-0001-3286-4888
   論文: 論零知識決定樹上模型承諾之實際效率 // On the Practical Efficiency of Model Commitment in Zero Knowledge Decision Tree
   論文連結: https://hdl.handle.net/11296/m4536v
 - 廖酉詳 | You-Siang Liao
+  ORCID: 0009-0003-4329-0167
   論文: 基於協同零知識證明之點對點聯邦式學習安全聚合的隱私保護驗證 // Privacy-Preserving Verification of Secure Aggregation for Peer-to-Peer Federated Learning from Collaborative Zero Knowledge Proof
   論文連結: https://hdl.handle.net/11296/hbqtuu
 - 張震凡 | Chen-Fan Chang
+  ORCID: 0000-0003-1804-7934
   論文: 基於知識蒸餾之機器學習推論過程零知識證明通用框架 // A Generic Framework of Zero Knowledge Machine Learning Inference from Knowledge Distillation
   論文連結: https://hdl.handle.net/11296/v5pkwu
 - 洪聖傑 | Sheng-Chieh Hung
+  ORCID: 0009-0001-4795-9257
   論文: 利用微調大型語言模型產生差分隱私合成資料集 // Differentially Private Synthetic Dataset Generation by Fine-tuning Large Language Models
   論文連結: https://hdl.handle.net/11296/7cnfvu
 
 ## 2024
 - 顏薪展 | Hsin-Chan Yen
+  ORCID: 0009-0007-5364-3260
   論文: 保有隱私主成份分析：基於私密分享之雙雲構造於保護共變數矩陣 // Privacy Preserving Principal Components Analysis: A Secure Dual-Cloud Construction Based on Secret Sharing for Protecting Covariance Matrix
   論文連結: https://hdl.handle.net/11296/9nccsc
 - 林姵妏 | Pei-Wen Lin
+  ORCID: 0009-0000-3630-9024
   論文: 基於Blaze 私密分享框架之保有隱私神經網路訓練 // Achieving Privacy-Preserving Neural Network Training Based on Blaze Secret Sharing Framework
   論文連結: https://hdl.handle.net/11296/49knz4
 - 張桓齊 | Huan-Chi Chang
+  ORCID: 0009-0005-4725-4790
   論文: 論總和檢查證明協定與近似多項式策略應用於隱私強化負債證明機制 // On the Applications of Sum-Check Protocol and Polynomial Approximation to Privacy Enhancing Proof of Liabilities
   論文連結: https://hdl.handle.net/11296/ce3b8x
 - 賴宗賢 | Zong-Sian Lai
+  ORCID: 0009-0005-4492-2204
   論文: 植基於協作式零知識證明於聯邦學習上使用者資源分配與資料來源信任度之保有隱私應用 // Privacy Preserving Approaches with Collaborative Zero Knowledge Proofs on User Resource Allocation and Data Source Trustworthiness in Federated Learning
   論文連結: https://hdl.handle.net/11296/52b7x5
 - 張廷宇 | Ting-Yu Chang
+  ORCID: 0009-0006-2430-8423
   論文: 利用零知識證明有效率驗證近鄰演算法執行與模型隱私保護 // Efficient Zero Knowledge Proof for Verification of Evaluating Nearest Neighbor Algorithm with Model Privacy Protection
   論文連結: https://hdl.handle.net/11296/yr2e58
 
