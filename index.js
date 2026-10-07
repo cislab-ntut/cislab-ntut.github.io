@@ -406,6 +406,118 @@
 	window.addEventListener('hashchange', handleAlumniHash);
 
 
+	/* ---------------- 老大的閃卡：跟著滑鼠或手指傾斜、反光 ---------------- */
+	var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+	function attachHolo(card) {
+		if (!card) return;
+		var MAX = 14;   // 最大傾斜角度
+		function set(k, v) { card.style.setProperty(k, v); }
+		function move(e) {
+			var r = card.getBoundingClientRect();
+			var x = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+			var y = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+			set('--mx', (x * 100).toFixed(1) + '%');
+			set('--my', (y * 100).toFixed(1) + '%');
+			set('--hyp', Math.min(1, Math.hypot(x - .5, y - .5) * 2).toFixed(3));
+			if (!still) {
+				set('--ry', ((x - .5) * 2 * MAX).toFixed(2) + 'deg');
+				set('--rx', ((.5 - y) * 2 * MAX).toFixed(2) + 'deg');
+			}
+			card.classList.add('is-active');
+		}
+		function reset() {
+			card.classList.remove('is-active');
+			set('--rx', '0deg'); set('--ry', '0deg');
+			set('--mx', '50%'); set('--my', '50%'); set('--hyp', '0');
+		}
+		card.addEventListener('pointermove', move);
+		card.addEventListener('pointerleave', reset);
+		card.addEventListener('pointercancel', reset);
+		card.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') reset(); });
+		card.resetHolo = reset;
+	}
+	attachHolo($('bossCard'));
+	attachHolo($('bigCard'));
+
+	/* ---------------- 開卡包：點卡片 → 飛到畫面中央、轉三圈、光芒四射；點旁邊或 Esc 收回 ---------------- */
+	(function () {
+		var src = $('bossCard'), stage = $('cardStage'), fly = $('cardFly');
+		if (!src || !stage) return;
+		var flip = fly.querySelector('.card-flip'), busy = false;
+		var RATIO = 675 / 900;
+
+		function target() {
+			var vw = window.innerWidth, vh = window.innerHeight;
+			var h = Math.min(vh * .76, 640), w = h * RATIO;
+			if (w > vw * .84) { w = vw * .84; h = w / RATIO; }
+			return { left: (vw - w) / 2, top: (vh - h) / 2 - 12, width: w, height: h };
+		}
+		function place(r) {
+			fly.style.left = r.left + 'px'; fly.style.top = r.top + 'px';
+			fly.style.width = r.width + 'px'; fly.style.height = r.height + 'px';
+		}
+		// 原本卡片相對於中央大卡片的位移與縮放（以中心點對齊）
+		function delta(from, to) {
+			return 'translate(' + ((from.left + from.width / 2) - (to.left + to.width / 2)).toFixed(1) + 'px,' +
+				((from.top + from.height / 2) - (to.top + to.height / 2)).toFixed(1) + 'px) scale(' + (from.width / to.width).toFixed(3) + ')';
+		}
+		function sparks() {
+			var box = $('cardSparks'), html = '';
+			if (still) { box.innerHTML = ''; return; }
+			for (var i = 0; i < 26; i++) {
+				html += '<span class="card-spark" style="--a:' + (Math.random() * 360).toFixed(0) + 'deg;--d:' + (140 + Math.random() * 260).toFixed(0) +
+					'px;--s:' + (5 + Math.random() * 10).toFixed(0) + 'px;--t:' + (.8 + Math.random() * .7).toFixed(2) + 's;--delay:' + (.25 + Math.random() * .5).toFixed(2) + 's"></span>';
+			}
+			box.innerHTML = html;
+		}
+		function open() {
+			if (busy || stage.open) return;
+			busy = true;
+			if (src.resetHolo) src.resetHolo();
+			var from = src.getBoundingClientRect(), to = target();
+			place(to);
+			sparks();
+			if (stage.showModal) stage.showModal(); else stage.setAttribute('open', '');
+			src.style.visibility = 'hidden';
+			if (still || !fly.animate) { busy = false; return; }
+			fly.animate([
+				{ transform: delta(from, to) },
+				{ transform: 'translateY(-36px) scale(1.06)', offset: .62 },
+				{ transform: 'none' }
+			], { duration: 1150, easing: 'cubic-bezier(.2,.8,.2,1)' });
+			flip.animate([
+				{ transform: 'rotateY(0deg)' },
+				{ transform: 'rotateY(1080deg)' }
+			], { duration: 1350, easing: 'cubic-bezier(.12,.72,.22,1)' }).onfinish = function () { busy = false; };
+		}
+		function close() {
+			if (busy || !stage.open) return;
+			busy = true;
+			if ($('bigCard').resetHolo) $('bigCard').resetHolo();
+			var done = function () {
+				if (stage.close) stage.close(); else stage.removeAttribute('open');
+				src.style.visibility = '';
+				busy = false;
+				src.focus({ preventScroll: true });
+			};
+			if (still || !fly.animate) return done();
+			var from = src.getBoundingClientRect(), to = fly.getBoundingClientRect();
+			flip.animate([{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(-360deg)' }], { duration: 600, easing: 'ease-in' });
+			var fade = stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, easing: 'ease-in', fill: 'forwards' });
+			fly.animate([{ transform: 'none' }, { transform: delta(from, to) }], { duration: 600, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' })
+				.onfinish = function () { done(); fly.getAnimations().forEach(function (a) { a.cancel(); }); fade.cancel(); };
+		}
+
+		src.addEventListener('click', open);
+		src.addEventListener('keydown', function (e) {
+			if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+		});
+		$('cardClose').addEventListener('click', close);
+		stage.addEventListener('click', function (e) { if (!e.target.closest('.card-fly, .card-close')) close(); });
+		stage.addEventListener('cancel', function (e) { e.preventDefault(); close(); });   // Esc
+		window.addEventListener('resize', function () { if (stage.open && !busy) place(target()); });
+	})();
+
 	/* ---------------- 老大標籤：博 N 學長（每年 9 月自動 +1） ---------------- */
 	var BOSS_PHD = { year: 2026, n: 17 };   // 2026 年 9 月起為「博17」
 	function bossYears() {
