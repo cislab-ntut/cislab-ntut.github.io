@@ -670,13 +670,96 @@ header.page-head {
 /* ---------- 關於 ---------- */
 .about-grid {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) 280px;
-	gap: 40px;
+	grid-template-columns: minmax(0, 1fr) 210px;
+	gap: 32px;
 	align-items: start;
 }
-.about-text { max-width: 68ch; }
-.about-text p { margin-bottom: .6em; }
+.about-text p { margin-bottom: .6em; text-align: justify; }
 .about-text .lead { font-size: 1.12em; margin-bottom: 1em; }
+/* 老師親筆的那句：小標籤，外框有兩道光一直繞圈 */
+@property --note-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.prof-note {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 4px 0 0 6px;
+	padding: 2px 10px;
+	border: 1.5px solid color-mix(in srgb, #ec8c69 35%, transparent);
+	border-radius: 999px;
+	background: color-mix(in srgb, #ec8c69 12%, transparent);
+	color: #ec8c69;
+	font-size: .8em;
+	font-weight: 600;
+}
+.prof-note::before {
+	content: '';
+	position: absolute;
+	inset: -1.5px;
+	padding: 1.5px;
+	border-radius: inherit;
+	background: conic-gradient(from var(--note-angle), transparent 0 25%, #ec8c69 45%, #ffd9c4 50%, transparent 50% 75%, #ec8c69 95%, #ffd9c4 100%);
+	-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+	-webkit-mask-composite: xor;
+	mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+	animation: note-spin 3s linear infinite;
+	pointer-events: none;
+}
+@keyframes note-spin { to { --note-angle: 360deg; } }
+.prof-note i { font-size: .9em; }
+/* 「保留最後解釋權」：假裝是合約小字，結尾的 XD 時不時笑到發抖，滑過去笑得更大 */
+.fine-print {
+	display: block;
+	margin-top: 6px;
+	color: var(--text-soft);
+	font-size: .78em;
+	letter-spacing: .04em;
+	text-align: left;
+}
+.xd {
+	display: inline-block;
+	margin-left: 2px;
+	padding: 0 6px;
+	border-radius: 6px;
+	background: #ec8c69;
+	color: #fff;
+	font-weight: 800;
+	letter-spacing: 0;
+	cursor: default;
+	animation: xd-giggle 4s ease-in-out infinite;
+}
+.fine-print:hover .xd { animation: xd-laugh .35s ease-in-out infinite; }
+@keyframes xd-laugh {
+	0%, 100% { transform: scale(1.25) rotate(-8deg); }
+	50% { transform: scale(1.25) rotate(8deg); }
+}
+/* 「愛」「歡樂」：碰到會飄愛心／放煙火（js/about-fx.js） */
+.fx-love, .fx-joy {
+	font-weight: 700;
+	cursor: pointer;
+	border-bottom: 1.5px dotted currentColor;
+}
+.fx-love { color: #ff5d8f; }
+.fx-joy {
+	background: linear-gradient(90deg, #ec8c69, #ffd166, #06d6a0, #4f6fd8, #ff5d8f, #ec8c69) 0 0 / 300% 100%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	border-bottom-color: #ffd166;
+	animation: joy-flow 4s linear infinite;
+}
+@keyframes joy-flow { to { background-position: 300% 0; } }
+.fx-layer { position: fixed; inset: 0; pointer-events: none; z-index: 9000; overflow: hidden; }
+.fx-bit { position: absolute; display: block; line-height: 1; will-change: transform, opacity; }
+.fx-spark { width: 5px; height: 5px; border-radius: 50%; }
+.fx-confetti { border-radius: 1px; }
+@keyframes xd-giggle {
+	0%, 80%, 100% { transform: rotate(0); }
+	84% { transform: rotate(-12deg); }
+	88% { transform: rotate(10deg); }
+	92% { transform: rotate(-8deg); }
+	96% { transform: rotate(6deg); }
+}
 .about-facts {
 	list-style: none;
 	border-left: 3px solid var(--line);
@@ -721,6 +804,25 @@ header.page-head {
 	color: #fff;
 	font-weight: bold;
 	background: linear-gradient(transparent, rgba(40, 10, 30, .7));
+}
+/* 有滑鼠的裝置：平常只看照片，滑過去才蓋上半透明遮罩、名稱浮在正中間；手機維持底部字幕 */
+@media (hover: hover) {
+	.gallery figcaption {
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 16px;
+		font-size: 1.3em;
+		letter-spacing: .08em;
+		text-align: center;
+		text-shadow: 0 2px 10px rgba(0, 0, 0, .5);
+		background: rgba(40, 10, 30, .55);
+		opacity: 0;
+		transform: translateY(6px);
+		transition: opacity .3s, transform .3s;
+	}
+	.gallery figure:hover figcaption { opacity: 1; transform: none; }
 }
 
 /* ---------- 實驗室生活：相簿 + 輪播 ---------- */
