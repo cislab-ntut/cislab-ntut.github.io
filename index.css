@@ -1349,9 +1349,9 @@ body:has(.card-stage[open]) { overflow: hidden; }
 .boss-meta li { display: flex; align-items: baseline; gap: 10px; padding: 3px 0; }
 .boss-meta i { flex: 0 0 18px; text-align: center; color: #ec8c69; }
 .boss-meta .copy-btn { flex: 0 0 auto; }
-.boss-orcid a { color: inherit; text-decoration: none; border-bottom: 1px dashed var(--line); }
-.boss-orcid a:hover { color: var(--accent); border-bottom-color: var(--accent); }
-.boss-orcid a i { font-size: .75em; color: var(--text-soft); }
+.boss-meta a { color: inherit; text-decoration: none; border-bottom: 1px dashed var(--line); }
+.boss-meta a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.boss-meta a i { font-size: .75em; color: var(--text-soft); }
 
 .boss-link {
 	display: inline-flex;
@@ -1764,6 +1764,7 @@ body:has(.alum-dialog[open]) { overflow: hidden; }
 .link-chip--site i { color: #ec8c69; }
 .link-chip--hackmd i { color: #4f6fd8; }
 .link-chip--linkedin i { color: #0a66c2; }
+.link-chip--github i,
 .link-chip--orcid i { color: #ec8c69; }
 [data-theme="dark"] .link-chip--linkedin i { color: #70b5f9; }
 .info-row dd a:hover { text-decoration: underline; }

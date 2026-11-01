@@ -18,16 +18,19 @@
 
 ## 博班修煉中 | Ph.D. students, still in training | 博士課程で修行中
 - 張震凡 | Chen-Fan Chang
+  GitHub: fan0723
   ORCID: 0000-0003-1804-7934
   共指: 國立清華大學 資訊工程學系 邱德泉 教授 // Prof. Te-Chuan Chiu, Department of Computer Science, National Tsing Hua University
 - 施凱喆 | Kai-Che Shih
   ORCID: 0009-0009-7982-9973
   共指: 國立清華大學 資訊工程學系 邱德泉 教授 // Prof. Te-Chuan Chiu, Department of Computer Science, National Tsing Hua University
 - 陳宣宇 | Xuan-Yu Chen
+  GitHub: Ben0607
   ORCID: 0009-0005-7389-7853
 - 何柏翰 | Po-Han Ho
   ORCID: 0009-0000-5054-2922
 - 張育丞 | Yu-Cheng Chang
+  GitHub: Yucheng0208
   ORCID: 0000-0003-1301-9192
   共指: 國立清華大學 資訊工程學系 沈之涯 教授 // Prof. Chih-Ya Shen, Department of Computer Science, National Tsing Hua University
 
