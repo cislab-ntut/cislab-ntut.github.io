@@ -1,0 +1,3 @@
+# 不要把維護說明發布到網站上（裡面有彩蛋解答）
+exclude:
+  - MAINTAINING.md

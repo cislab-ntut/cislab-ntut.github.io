@@ -28,7 +28,8 @@ content/
 image/              圖片
   gallery/          相簿照片（建議一個活動一個資料夾）
   logo/             實驗室 Logo（向量圖形、字標、favicon、社群分享圖）
-.nojekyll           告訴 GitHub Pages 不要跑 Jekyll
+MAINTAINING.md      維護說明（就是這份；不叫 README 是為了不在 GitHub 首頁顯示）
+_config.yml         讓 GitHub Pages 不要把這份說明發布到網站上
 ```
 
 ## 部署到 GitHub Pages（不使用 Actions）
