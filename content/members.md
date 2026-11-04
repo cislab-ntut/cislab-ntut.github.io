@@ -22,6 +22,7 @@
   ORCID: 0000-0003-1804-7934
   共指: 國立清華大學 資訊工程學系 邱德泉 教授 // Prof. Te-Chuan Chiu, Department of Computer Science, National Tsing Hua University
 - 施凱喆 | Kai-Che Shih
+  GitHub: benjschoen8
   ORCID: 0009-0009-7982-9973
   共指: 國立清華大學 資訊工程學系 邱德泉 教授 // Prof. Te-Chuan Chiu, Department of Computer Science, National Tsing Hua University
 - 陳宣宇 | Xuan-Yu Chen
