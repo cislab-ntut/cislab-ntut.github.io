@@ -19,6 +19,7 @@
     ORCID: 0000-0000-0000-0000            → 選填，16 碼或完整網址都可以
     email: name@example.com              → 選填
     別名: Song-Yi Hsu                     → 選填，論文上用過的其他英文拼法（逗號分隔），一樣會被標示成實驗室成員
+    法定英文名: Legal Name                → 選填，有第二個英文法定姓名（例如雙重國籍）時填寫，會接在英文名後面顯示（Kai-Che Shih / Benjamin Schoen）
 
 說明：
   - 姓名下方的欄位（論文、備註、現職、網頁、email）前面要縮排（空兩格）。
@@ -53,6 +54,7 @@
   論文連結: https://hdl.handle.net/11296/672uus
 - 施凱喆 | Kai-Che Shih
   ORCID: 0009-0009-7982-9973
+  法定英文名: Benjamin Schoen
   論文: 論標準零知識電路實作下非線性運算正規化瓶頸 // Circuit Normalization Bottlenecks in Trivial Zero-Knowledge Decision Tree Evaluation
   論文連結: https://hdl.handle.net/11296/v54zg3
 - 梁羽承 | Yu-Cheng Liang

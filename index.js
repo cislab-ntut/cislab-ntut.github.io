@@ -82,6 +82,8 @@
 	}
 
 
+	// 英文名：有第二個英文法定姓名（例如雙重國籍）時一起列出，例如「Kai-Che Shih / Benjamin Schoen」
+	function enName(p) { return [p.en].concat(p.legal || []).filter(Boolean).join(' / '); }
 	var memberShown = [];
 	function drawMembers(groups) {
 		var box = $('membersList'), en = lang() === 'en';   // 只有英文模式用英文名當主名，日文模式顯示漢字
@@ -94,7 +96,7 @@
 				'<ul class="member-grid">' + g.people.map(function (p) {
 					p.grad = grad;
 					var idx = memberShown.push(p) - 1;
-					var main = en && p.en ? p.en : p.zh, sub = en ? (p.en ? p.zh : '') : p.en;
+					var pe = enName(p), main = en && pe ? pe : p.zh, sub = en ? (pe ? p.zh : '') : pe;
 					var av = p.photo
 						? '<img class="avatar" src="' + esc(p.photo) + '" alt="" loading="lazy">'
 						: '<span class="avatar" style="--g:' + grad + '" aria-hidden="true">' + esc(avatarText(p.zh)) + '</span>';
@@ -146,7 +148,7 @@
 
 	function personMatch(p, q) {
 		if (!q) return true;
-		var hay = [p.zh, p.en, p.note, p.now, SHOW_THESIS ? p.thesis : ''].join(' ').toLowerCase();   // 開啟論文時，中英文題目都能搜尋
+		var hay = [p.zh, p.en, (p.legal || []).join(' '), p.note, p.now, SHOW_THESIS ? p.thesis : ''].join(' ').toLowerCase();   // 開啟論文時，中英文題目都能搜尋
 		return hay.indexOf(q) >= 0;
 	}
 
@@ -205,7 +207,7 @@
 					var label = /^\d{4}$/.test(g.y.year) ? ui('alumniYear')(g.y.year) : g.y.year;
 					return '<div class="alum-year"><h3>' + esc(label) + '<span class="count">' + ui('people')(g.ps.length) + '</span></h3>' +
 						'<ul class="alum-grid">' + g.ps.map(function (p) {
-							var main = en && p.en ? p.en : p.zh, sub = en ? (p.en ? p.zh : '') : p.en;
+							var pe = enName(p), main = en && pe ? pe : p.zh, sub = en ? (pe ? p.zh : '') : pe;
 							// 英文名的連字號換成不斷行的連字號：放不下時只在空格處換行（例如 Carlomagno Amaya Flores）
 							var nb = function (v) { return esc(v).replace(/-/g, '\u2011'); };
 							var inner = '<span class="avatar avatar--sm" aria-hidden="true">' + esc(avatarText(p.zh)) + '</span>' +
@@ -306,7 +308,7 @@
 		if (!p) return;
 		dlgList = k; dlgIdx = i;
 		var en = lang() === 'en', isAlum = p.kind === 'alumni';
-		var main = en && p.en ? p.en : p.zh, sub = en ? (p.en ? p.zh : '') : p.en;
+		var pe = enName(p), main = en && pe ? pe : p.zh, sub = en ? (pe ? p.zh : '') : pe;
 
 		var tags = '';
 		if (isAlum) {

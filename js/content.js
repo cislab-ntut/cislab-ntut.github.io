@@ -94,7 +94,7 @@
 			} else if (!/^\s/.test(raw) && (m = line.match(/^[-*]\s+(.+)$/))) {
 				ensure();
 				var sp = splitPerson(m[1]);
-				person = { zh: sp.zh, en: sp.en, aka: [], photo: sp.photo, degree: '', thesis: '', thesisUrl: '', note: '', now: '', web: '', links: [], email: '', coadvisor: '', year: yr.year, group: yr, era: era };
+				person = { zh: sp.zh, en: sp.en, aka: [], legal: [], photo: sp.photo, degree: '', thesis: '', thesisUrl: '', note: '', now: '', web: '', links: [], email: '', coadvisor: '', year: yr.year, group: yr, era: era };
 				if (sp.note) { // 相容舊格式「姓名（北科，說明）」
 					var n = sp.note.replace(/^(北科|元智)\s*[-－—，,]?\s*/, '').trim();
 					if (n) person.note = n;
@@ -110,6 +110,7 @@
 				else if (k === '英文' || k === 'en') person.en = v;
 				else if (k === '照片' || k === 'photo') person.photo = v;
 				else if (/^(別名|又名|aka|alias)$/.test(k)) person.aka = v.split(/\s*[,，;；、]\s*/).filter(Boolean);
+				else if (/^(法定英文名|英文法定名|法定姓名|legal|legal name|legal_name)$/.test(k)) person.legal = v.split(/\s*[,，;；、]\s*/).filter(Boolean);
 				else if (/^(個人網頁|網頁|網站|website|web|url)$/.test(k)) { addLinks(person, v, ''); if (!person.web) person.web = v.split(/[\s,，、]+/)[0]; }
 				else if (k === 'github') addLinks(person, v, 'github');
 				else if (k === 'hackmd') addLinks(person, v, 'hackmd');
@@ -135,8 +136,8 @@
 			getText('content/alumni.md').then(parsePeople).catch(function (e) { console.error(e); return []; })
 		]).then(function (r) {
 			people.zh2en = {}; people.labEn = [];
-			// 別名（論文上的其他英文拼法）也算實驗室成員，論文作者會一起標示
-			function add(p) { if (p.en) { people.zh2en[p.zh] = p.en; people.labEn.push(p.en); } people.labEn.push.apply(people.labEn, p.aka); }
+			// 別名（論文上的其他英文拼法）、另一個英文法定姓名也算實驗室成員，論文作者會一起標示
+			function add(p) { if (p.en) { people.zh2en[p.zh] = p.en; people.labEn.push(p.en); } people.labEn.push.apply(people.labEn, p.aka.concat(p.legal)); }
 			var groups = [];
 			r[0].forEach(function (e) { groups = groups.concat(e.years); });
 			r[0].forEach(function (e) { e.years.forEach(function (y) { y.people.forEach(function (p) { p.kind = 'member'; add(p); }); }); });
@@ -149,6 +150,7 @@
 				p.stillHere = p.degree === 'ms' && !!current[p.zh];
 				if (p.stillHere) current[p.zh].msYear = p.year;
 				if (!p.en && current[p.zh]) p.en = current[p.zh].en;
+				if (!p.legal.length && current[p.zh]) p.legal = current[p.zh].legal;
 				add(p);
 			}); }); });
 			return { members: groups, alumni: r[1] };

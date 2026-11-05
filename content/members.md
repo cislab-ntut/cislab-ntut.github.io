@@ -11,6 +11,7 @@
     email: name@example.com                   → 選填
     共指: 中文說明 // English                  → 選填，與他校共同指導時填寫主要指導教授
     別名: Other Spelling                        → 選填，論文上用過的其他英文拼法
+    法定英文名: Legal Name                      → 選填，有第二個英文法定姓名（例如雙重國籍）時填寫，會接在英文名後面顯示（Kai-Che Shih / Benjamin Schoen）
 
 點名字會打開個人資訊彈窗；網頁、GitHub、HackMD、LinkedIn、ORCID 會一起列在「個人連結」，都沒填就顯示「尚未公開」。Email 沒填也顯示「尚未公開」，沒填共指就不顯示。
 英文名也會用來在「論文發表」中自動標示實驗室成員。
@@ -23,6 +24,7 @@
   共指: 國立清華大學 資訊工程學系 邱德泉 教授 // Prof. Te-Chuan Chiu, Department of Computer Science, National Tsing Hua University
 - 施凱喆 | Kai-Che Shih
   GitHub: benjschoen8
+  法定英文名: Benjamin Schoen
   ORCID: 0009-0009-7982-9973
   共指: 國立清華大學 資訊工程學系 邱德泉 教授 // Prof. Te-Chuan Chiu, Department of Computer Science, National Tsing Hua University
 - 陳宣宇 | Xuan-Yu Chen
