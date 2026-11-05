@@ -448,6 +448,13 @@
 		if (!src || !stage) return;
 		var flip = fly.querySelector('.card-flip'), busy = false;
 		var RATIO = 675 / 900;
+		var angle = 0;   // 目前翻到的角度：0 正面、180 背面（可以一直往同方向翻，所以會累加）
+		function setAngle(a, animate) {
+			angle = a;
+			flip.style.transition = animate && !still ? 'transform .55s cubic-bezier(.2,.9,.25,1.15)' : 'none';
+			flip.style.transform = 'rotateY(' + a.toFixed(1) + 'deg)';
+			fly.classList.toggle('is-back', Math.round(a / 180) % 2 !== 0);
+		}
 
 		function target() {
 			var vw = window.innerWidth, vh = window.innerHeight;
@@ -479,6 +486,8 @@
 			if (src.resetHolo) src.resetHolo();
 			var from = src.getBoundingClientRect(), to = target();
 			place(to);
+			drag = null;
+			setAngle(0, false);
 			sparks();
 			if (stage.showModal) stage.showModal(); else stage.setAttribute('open', '');
 			src.style.visibility = 'hidden';
@@ -505,18 +514,59 @@
 			};
 			if (still || !fly.animate) return done();
 			var from = src.getBoundingClientRect(), to = fly.getBoundingClientRect();
-			flip.animate([{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(-360deg)' }], { duration: 600, easing: 'ease-in' });
+			flip.animate([{ transform: 'rotateY(' + angle + 'deg)' }, { transform: 'rotateY(' + (angle - 360) + 'deg)' }], { duration: 600, easing: 'ease-in' });
 			var fade = stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, easing: 'ease-in', fill: 'forwards' });
 			fly.animate([{ transform: 'none' }, { transform: delta(from, to) }], { duration: 600, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' })
 				.onfinish = function () { done(); fly.getAnimations().forEach(function (a) { a.cancel(); }); fade.cancel(); };
 		}
+
+		/* 翻面：點卡片翻一面；左右拖曳時卡片跟著手指轉，放開後停在比較近的那一面（甩快一點就直接翻過去） */
+		var drag = null, DEG_PER_PX = .55, dragEndAt = 0;
+		function flipBy(dir) { if (!busy && stage.open) setAngle(Math.round(angle / 180) * 180 + 180 * dir, true); }
+		fly.addEventListener('pointerdown', function (e) {
+			if (busy || e.button > 0) return;
+			drag = { id: e.pointerId, x0: e.clientX, a0: angle, moved: false, lx: e.clientX, lt: e.timeStamp, v: 0 };
+		});
+		fly.addEventListener('pointermove', function (e) {
+			if (!drag || e.pointerId !== drag.id) return;
+			var dx = e.clientX - drag.x0;
+			if (!drag.moved && Math.abs(dx) < 6) return;
+			if (!drag.moved) {
+				drag.moved = true;
+				try { fly.setPointerCapture(e.pointerId); } catch (err) {}
+				if ($('bigCard').resetHolo) $('bigCard').resetHolo();
+				fly.classList.add('is-dragging');
+			}
+			var dt = e.timeStamp - drag.lt;
+			if (dt > 0) drag.v = drag.v * .5 + ((e.clientX - drag.lx) / dt) * .5;   // px/ms，平滑一下
+			drag.lx = e.clientX; drag.lt = e.timeStamp;
+			setAngle(drag.a0 + dx * DEG_PER_PX, false);
+		});
+		function endDrag(e) {
+			if (!drag || e.pointerId !== drag.id) return;
+			var d = drag; drag = null;
+			fly.classList.remove('is-dragging');
+			if (!d.moved) { if (e.type === 'pointerup') flipBy(1); return; }   // 沒拖動 = 點一下
+			dragEndAt = Date.now();   // 拖完放開時滑鼠可能在卡片外，接著的 click 不能當成「點旁邊收回」
+			var snap = Math.round(angle / 180) * 180;
+			if (Math.abs(d.v) > .45 && Math.abs(angle - d.a0) < 270) {             // 甩動：往甩的方向翻到下一面
+				snap = (d.v > 0 ? Math.floor(angle / 180) + 1 : Math.ceil(angle / 180) - 1) * 180;
+			}
+			setAngle(snap, true);
+		}
+		fly.addEventListener('pointerup', endDrag);
+		fly.addEventListener('pointercancel', endDrag);
+		fly.addEventListener('keydown', function (e) {
+			if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); flipBy(1); }
+			else if (e.key === 'ArrowLeft') { e.preventDefault(); flipBy(-1); }
+		});
 
 		src.addEventListener('click', open);
 		src.addEventListener('keydown', function (e) {
 			if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
 		});
 		$('cardClose').addEventListener('click', close);
-		stage.addEventListener('click', function (e) { if (!e.target.closest('.card-fly, .card-close')) close(); });
+		stage.addEventListener('click', function (e) { if (Date.now() - dragEndAt > 400 && !e.target.closest('.card-fly, .card-close')) close(); });
 		stage.addEventListener('cancel', function (e) { e.preventDefault(); close(); });   // Esc
 		window.addEventListener('resize', function () { if (stage.open && !busy) place(target()); });
 	})();

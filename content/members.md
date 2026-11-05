@@ -2,7 +2,7 @@
 現任成員
 格式：
   ## 中文組別 | English group name | 日本語（選填）
-  - 中文姓名 | English Name | image/照片.jpg   → 英文名與照片都可省略
+  - 中文姓名 | English Name | image/照片.jpg   → 英文名與照片都可省略；英文名沒填會照台灣常見拼法自動轉換（例：張育丞 → Yu-Cheng Chang）
     網頁: https://...                         → 選填，以下各行前面空兩格；可放多個網址，用逗號分隔
     GitHub: 帳號或網址                         → 選填，例如 your-id 或 https://github.com/your-id
     HackMD: 帳號或網址                         → 選填，例如 @your-id 或 https://hackmd.io/@your-id

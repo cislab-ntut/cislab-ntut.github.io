@@ -130,11 +130,70 @@
 		return eras.filter(function (e) { return e.years.length; });
 	}
 
+	/* ---------------- 沒填英文名時：照台灣常見拼法（威妥瑪式，護照常用）自動轉換 ---------------- */
+	// 例：張育丞 → Yu-Cheng Chang、謝鑫 → Hsin Hsieh、李 → Lee
+	var PINYIN_SRC = 'https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js';
+	var NAME_PY = { '柏': 'bo' };   // 名字裡常見的破音字，字典預設讀音不對時在這裡指定
+	var SURNAME_EN = { '李': 'Lee', '呂': 'Lu', '盧': 'Lu', '游': 'Yu', '余': 'Yu', '涂': 'Tu', '卓': 'Cho' };
+	var COMPOUND_SURNAMES = ['歐陽', '司馬', '諸葛', '上官', '司徒', '東方', '皇甫', '張簡', '范姜', '夏侯', '公孫', '慕容', '令狐', '尉遲', '長孫', '端木', '軒轅', '宇文', '澹臺', '西門'];
+	var WG_WHOLE = {
+		zi: 'tzu', ci: 'tzu', si: 'szu', zhi: 'chih', chi: 'chih', shi: 'shih', ri: 'jih', er: 'erh',
+		yan: 'yen', you: 'yu', yong: 'yung', ye: 'yeh', yue: 'yueh', ge: 'ko', ke: 'ko', he: 'ho',
+		gui: 'kuei', kui: 'kuei', e: 'e'
+	};
+	var WG_INITIALS = [['zh', 'ch'], ['ch', 'ch'], ['sh', 'sh'], ['b', 'p'], ['p', 'p'], ['m', 'm'], ['f', 'f'], ['d', 't'], ['t', 't'], ['n', 'n'], ['l', 'l'],
+		['g', 'k'], ['k', 'k'], ['h', 'h'], ['j', 'ch'], ['q', 'ch'], ['x', 'hs'], ['r', 'j'], ['z', 'ts'], ['c', 'ts'], ['s', 's'], ['y', 'y'], ['w', 'w']];
+	function toWadeGiles(py) {
+		py = String(py || '').toLowerCase().replace(/[üv]/g, 'u');
+		if (WG_WHOLE[py]) return WG_WHOLE[py];
+		var ini = '', out = '', fin = py;
+		for (var i = 0; i < WG_INITIALS.length; i++) {
+			if (py.indexOf(WG_INITIALS[i][0]) === 0) { ini = WG_INITIALS[i][0]; out = WG_INITIALS[i][1]; fin = py.slice(ini.length); break; }
+		}
+		fin = fin.replace(/ong$/, 'ung').replace(/ian$/, 'ien').replace(/ie$/, 'ieh').replace(/ue$/, 'ueh');
+		if (fin === 'uo' && !/^(g|k|h|sh)$/.test(ini)) fin = 'o';                  // 卓 cho、羅 lo、左 tso；郭 kuo、碩 shuo 保留
+		if (fin === 'e' && /^(d|t|g|k|h)$/.test(ini)) fin = ini === 'd' || ini === 't' ? 'e' : 'o';
+		return out + fin;
+	}
+	function cap(w) { return w ? w.charAt(0).toUpperCase() + w.slice(1) : ''; }
+	function autoEnName(zh) {
+		zh = String(zh || '').trim();
+		if (!/^[\u3400-\u9fff]{2,4}$/.test(zh) || !window.pinyinPro) return '';
+		var py = function (t, opt) { return window.pinyinPro.pinyin(t, Object.assign({ toneType: 'none', type: 'array', v: false }, opt || {})); };
+		var sn = COMPOUND_SURNAMES.indexOf(zh.slice(0, 2)) >= 0 && zh.length > 2 ? zh.slice(0, 2) : zh.charAt(0);
+		var given = zh.slice(sn.length);
+		var snEn = SURNAME_EN[sn] || py(sn, { surname: 'all' }).map(function (s) { return cap(toWadeGiles(s)); }).join('-');   // 范姜 → Fan-Chiang
+		var givenEn = py(given).map(function (s, i) { return cap(toWadeGiles(NAME_PY[given.charAt(i)] || s)); }).join('-');
+		return givenEn + ' ' + snEn;
+	}
+	function loadScript(src) {
+		return new Promise(function (ok, fail) {
+			var s = document.createElement('script');
+			s.src = src; s.onload = ok; s.onerror = fail;
+			document.head.appendChild(s);
+		});
+	}
+	// 有指定英文名就用指定的；歷屆成員沒寫就沿用現任成員的；還是沒有才自動轉換（只有需要時才載入拼音字典）
+	function fillEnNames(r) {
+		var all = [], current = {};
+		r.forEach(function (eras, i) { eras.forEach(function (e) { e.years.forEach(function (y) { y.people.forEach(function (p) {
+			if (i === 0) current[p.zh] = p;
+			else if (!p.en && current[p.zh] && current[p.zh].en) p.en = current[p.zh].en;
+			all.push(p);
+		}); }); }); });
+		var missing = all.filter(function (p) { return !p.en; });
+		if (!missing.length) return r;
+		return (window.pinyinPro ? Promise.resolve() : loadScript(PINYIN_SRC)).then(function () {
+			missing.forEach(function (p) { p.en = autoEnName(p.zh); p.enAuto = !!p.en; });
+			return r;
+		}, function (e) { console.error(e); return r; });
+	}
+
 	function loadPeople() {
 		return Promise.all([
 			getText('content/members.md').then(parsePeople).catch(function (e) { console.error(e); return []; }),
 			getText('content/alumni.md').then(parsePeople).catch(function (e) { console.error(e); return []; })
-		]).then(function (r) {
+		]).then(fillEnNames).then(function (r) {
 			people.zh2en = {}; people.labEn = [];
 			// 別名（論文上的其他英文拼法）、另一個英文法定姓名也算實驗室成員，論文作者會一起標示
 			function add(p) { if (p.en) { people.zh2en[p.zh] = p.en; people.labEn.push(p.en); } people.labEn.push.apply(people.labEn, p.aka.concat(p.legal)); }

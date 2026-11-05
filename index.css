@@ -1309,7 +1309,15 @@ body:has(.card-stage[open]) { overflow: hidden; }
 	from { transform: rotate(var(--a)) translateX(0) scale(.4); opacity: 1; }
 	to { transform: rotate(var(--a)) translateX(var(--d)) scale(0); opacity: 0; }
 }
+/* 顏文字整組不拆開：放不下就整個換到下一行 */
+.kao { white-space: nowrap; }
 .card-fly { position: fixed; transform-origin: 50% 50%; perspective: 1400px; }
+/* 中央大卡片可以點一下或左右拖曳翻面（index.js 的「翻面」） */
+.card-fly { cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; }
+.card-fly.is-dragging { cursor: grabbing; }
+.card-fly:focus-visible { outline: none; }
+.card-fly:focus-visible .card-face { box-shadow: 0 0 0 4px #fdc830, 0 30px 70px rgba(0, 0, 0, .5); }
+.card-fly img { -webkit-user-drag: none; pointer-events: none; }
 .card-flip { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
 .card-face {
 	position: absolute;
@@ -1321,24 +1329,69 @@ body:has(.card-stage[open]) { overflow: hidden; }
 	box-shadow: 0 30px 70px rgba(0, 0, 0, .5), 0 0 40px rgba(253, 200, 48, .35);
 }
 .card-front.holo-card { width: 100%; flex: none; }
-/* 卡背：實驗室 Logo，銀色外框 */
+/* 卡背：參考集換式卡牌背面——深藍外框、藍白漩渦、中央亮面圓徽、上下黃字藍邊的字標（下面那個倒過來）；Logo 本身不變 */
 .card-back {
 	transform: rotateY(180deg);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	gap: 6%;
-	border: 10px solid #dfe1e8;
+	justify-content: space-between;
+	padding: 11% 0;
+	border: solid #1c3f94;
+	border-width: clamp(8px, 4.2cqi, 22px);
+	container-type: inline-size;
 	background:
-		radial-gradient(circle at 50% 42%, rgba(255, 255, 255, .35), transparent 38%),
-		repeating-linear-gradient(45deg, rgba(255, 255, 255, .06) 0 10px, transparent 10px 20px),
-		linear-gradient(140deg, #3b5bdb 0%, #7b4fd6 45%, #ed6ea0 100%);
-	color: #fff;
+		radial-gradient(circle at 50% 50%, rgba(255, 255, 255, .95) 0 14%, rgba(205, 225, 255, .55) 26%, transparent 52%),
+		radial-gradient(ellipse 120% 90% at 50% 50%, #7fb0ec 0%, #3a78d4 42%, #1f4fae 78%, #173c8c 100%);
+	box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .25), inset 0 0 40px rgba(8, 24, 70, .55), 0 30px 70px rgba(0, 0, 0, .5), 0 0 40px rgba(80, 150, 255, .35);
+	color: #1c3f94;
 	--lock: #fdc830;
 }
-.card-back-mark { width: 48%; aspect-ratio: 302 / 288; fill: currentColor; stroke: currentColor; stroke-width: 7; filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .35)); }
-.card-back .brand-word { width: 46%; height: 9%; }
+.card-fly { container-type: size; }
+/* 漩渦：兩層斜著轉的放射條紋，模糊後疊起來像氣流 */
+.cb-swirl, .cb-swirl::before {
+	position: absolute;
+	inset: -30%;
+	background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 255, 255, .55) 0deg 7deg, transparent 16deg 30deg);
+	-webkit-mask: radial-gradient(circle at 50% 50%, transparent 10%, #000 22%, #000 46%, transparent 68%);
+	mask: radial-gradient(circle at 50% 50%, transparent 10%, #000 22%, #000 46%, transparent 68%);
+	filter: blur(5px);
+	transform: rotate(-18deg) scaleY(.82) skewX(-14deg);
+	animation: cb-spin 40s linear infinite;
+	pointer-events: none;
+}
+.cb-swirl::before { content: ''; inset: 8%; opacity: .7; transform: rotate(40deg) skewY(18deg); animation-direction: reverse; animation-duration: 55s; }
+@keyframes cb-spin { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .cb-swirl, .cb-swirl::before { animation: none; } }
+/* 黃色字標＋藍色描邊（描邊用外層的 drop-shadow，因為字標本身是 mask） */
+.cb-word {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	width: 78%;
+	height: 13%;
+	filter:
+		drop-shadow(2px 0 0 #2a5cc0) drop-shadow(-2px 0 0 #2a5cc0) drop-shadow(0 2px 0 #2a5cc0) drop-shadow(0 -2px 0 #2a5cc0)
+		drop-shadow(0 3px 0 #163a8a) drop-shadow(0 5px 6px rgba(0, 0, 0, .35));
+	transform: rotate(-3deg);
+}
+.cb-word--flip { transform: rotate(177deg); }
+.cb-word .brand-word { width: 100%; height: 100%; background: linear-gradient(#fff27a 0%, #ffd21f 45%, #f5a800 100%); }
+/* 中央圓徽：銀白亮面圓盤、深藍外圈，裡面是實驗室 Logo */
+.cb-orb {
+	position: relative;
+	display: grid;
+	place-items: center;
+	width: 50%;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	background:
+		radial-gradient(circle at 34% 28%, #fff 0 12%, rgba(255, 255, 255, 0) 34%),
+		radial-gradient(circle at 50% 55%, #f4f7fc 0%, #d9e1ee 55%, #a9b5c9 100%);
+	border: clamp(4px, 2.4cqi, 10px) solid #1c3f94;
+	box-shadow: 0 0 0 clamp(2px, 1cqi, 5px) rgba(255, 255, 255, .85), 0 10px 26px rgba(8, 24, 70, .55), inset 0 -8px 18px rgba(30, 50, 100, .25);
+}
+.card-back-mark { width: 68%; aspect-ratio: 302 / 288; fill: currentColor; stroke: currentColor; stroke-width: 7; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .25)); }
 .card-close { position: fixed; top: 16px; right: 16px; z-index: 3; background: rgba(255, 255, 255, .15); color: #fff; }
 .card-close:hover { background: rgba(255, 255, 255, .3); color: #fff; }
 .card-hint {
